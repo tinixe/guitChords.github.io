@@ -27,6 +27,14 @@ body {
   border-color: #dce5ee;
 }
 
+.app-fretboard-layout {
+  margin-block-start: max(0px, calc(49vh - 244px));
+}
+
+.app-fretboard-header {
+  min-height: 4.5rem;
+}
+
 .app-main h2 {
   color: #101b2e;
   font-family: inherit;

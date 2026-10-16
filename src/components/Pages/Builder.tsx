@@ -4,7 +4,6 @@ import { playChordSound } from '../utils/SoundLogic';
 import { CHROMATIC_FLATS, CHROMATIC_SHARPS } from '../Config';
 import { saveChord, generateChordTags, saveCustomChordName } from '../Database';
 import { getActiveNotes, getNoteName, getChordName } from '../utils/AuxFunctions';
-import { ChordLibrary } from './ChordLibrary';
 import { Fretboard } from '../utils/Fretboard';
 
 import type { AccidentalsPreference } from './MenuSettings';
@@ -197,10 +196,10 @@ export const Builder: React.FC<BuilderProps> = ({
   };
 
   return (
-        <div className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center justify-between p-8 font-sans pt-35">
-          <div className="w-full max-w-5xl flex flex-col items-center gap-8 my-auto pt-12 md:pt-0">
+        <div className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center p-8 font-sans pt-0">
+          <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8">
               {/* Contenedor del Título + Botón Lápiz */}
-            <div className="relative group max-w-full">
+            <div className="app-fretboard-header relative group flex w-full items-center justify-center">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-center font-serif whitespace-nowrap overflow-visible px-8">
                 {displayChordName}
               </h2>

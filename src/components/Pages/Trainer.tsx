@@ -234,12 +234,12 @@ export const Trainer: React.FC<TrainerProps> = ({
 
   return (
     <div 
-      className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center justify-between p-8 font-sans pt-35"
+      className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center p-8 font-sans pt-0"
       onClick={() => setActiveDropdown(null)} // Cierra dropdowns al hacer clic fuera
     >
-      <div className="w-full max-w-4xl flex flex-col items-center gap-8" onClick={(e) => e.stopPropagation()}>
+      <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8" onClick={(e) => e.stopPropagation()}>
         {/* Sección superior: nombre del acorde y puntos indicadores */}
-        <div className="w-full flex items-center justify-between gap-4 px-2">
+        <div className="app-fretboard-header w-full flex items-center justify-between gap-4 px-2">
           {/* Sección que muestra el nombre del acorde */}
           <div className="min-w-0 flex items-center bg-white px-5 py-1.5 rounded-full shadow-xs border border-zinc-200">
             {`${currentChord}`}

@@ -255,22 +255,22 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
   };
 
   return (
-    <div className="relative min-h-screen overflow-y-auto bg-white text-black flex flex-col items-center p-8 font-sans pt-35">
-      <div className="w-full max-w-4xl flex flex-col items-center gap-6">
+    <div className="relative min-h-screen overflow-y-auto bg-white text-black flex flex-col items-center p-8 font-sans pt-0">
+      <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8">
           {/* Division de las columnas superiores (Tonalidad, progresion y chordname) */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-[3fr_5.5fr_1.5fr] gap-3">
-          <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+        <div className="app-fretboard-header w-full grid grid-cols-[0.8fr_1.35fr_1fr] md:grid-cols-[3fr_5.5fr_1.5fr] gap-2 md:gap-3">
+          <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-zinc-600">
             Tonalidad
             <select
               value={exerciseTone}
               onChange={event => setExerciseTone(Number(event.target.value))}
               disabled={isPlaying}
-              className="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 disabled:opacity-50"
+              className="min-w-0 bg-white border border-zinc-200 rounded-lg px-2 py-2 text-sm text-zinc-800 disabled:opacity-50 md:px-3"
             >
               {scale.map((note, index) => <option key={note} value={index}>{note}</option>)}
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+          <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-zinc-600">
             Progresión
             <input
               type="text"
@@ -278,10 +278,10 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
               onChange={event => setProgression(event.target.value)}
               placeholder="IV V iii vi"
               disabled={isPlaying}
-              className="w-full min-w-0 bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-800 disabled:opacity-50"
+              className="w-full min-w-0 bg-white border border-zinc-200 rounded-lg px-2 py-2 text-sm text-zinc-800 disabled:opacity-50 md:px-3"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
+          <label className="flex min-w-0 flex-col gap-1 text-xs font-medium text-zinc-600">
             Acorde actual
             {/* Sección que muestra el nombre del acorde */}
             <div className="w-full min-w-0 bg-white border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-1000">

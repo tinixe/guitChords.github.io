@@ -199,12 +199,7 @@ export const Builder: React.FC<BuilderProps> = ({
   return (
         <div className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center justify-between p-8 font-sans pt-35">
           <div className="w-full max-w-5xl flex flex-col items-center gap-8 my-auto pt-12 md:pt-0">
-            <div className="w-full text-center">
-              <h1 className="text-3xl md:text-4xl font-serif text-zinc-900">Chord Builder</h1>
-              <p className="text-sm text-zinc-500 mt-1">Construye acordes en el diapasón, escucha cómo suenan y guárdalos en tu biblioteca.</p>
-            </div>
-
-            {/* Contenedor del Título + Botón Lápiz */}
+              {/* Contenedor del Título + Botón Lápiz */}
             <div className="relative group max-w-full">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-center font-serif whitespace-nowrap overflow-visible px-8">
                 {displayChordName}
@@ -345,8 +340,6 @@ export const Builder: React.FC<BuilderProps> = ({
               </div>
             </div>
           )}
-
-          <ChordLibrary accidentals={accidentals}/>
         </div>
 
 

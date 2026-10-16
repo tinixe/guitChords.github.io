@@ -257,30 +257,7 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
   return (
     <div className="relative min-h-screen overflow-y-auto bg-white text-black flex flex-col items-center p-8 font-sans pt-35">
       <div className="w-full max-w-4xl flex flex-col items-center gap-6">
-        <div className="w-full flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-serif text-zinc-900">Harmonic Path</h1>
-            <p className="text-sm text-zinc-500 mt-1">Construye el punto de partida y deja que la armonía encuentre el siguiente movimiento.</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onOpenSettings}
-              className="w-11 h-11 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
-              title="Ajustes"
-            >
-              <Settings className="w-5 h-5" />
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-11 h-11 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
-              title="Reiniciar acorde inicial"
-            >
-              <RotateCcw className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Division de las columnas superiores (Tonalidad, progresion y chordname) */}
+          {/* Division de las columnas superiores (Tonalidad, progresion y chordname) */}
         <div className="w-full grid grid-cols-1 md:grid-cols-[3fr_5.5fr_1.5fr] gap-3">
           <label className="flex flex-col gap-1 text-xs font-medium text-zinc-600">
             Tonalidad
@@ -337,13 +314,31 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
           )}
         </div>
 
-        <button
-          onClick={handleTogglePlay}
-          className="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
-          title={isPlaying ? 'Detener recorrido' : 'Iniciar recorrido'}
-        >
-          <Play className={`w-6 h-6 fill-current ${isPlaying ? 'animate-pulse' : ''}`} />
-        </button>
+        <div className="flex flex-col items-center gap-4 mt-2">
+          <div className="flex items-center justify-center gap-6 mb-16">
+            <button
+              onClick={onOpenSettings}
+              className="w-14 h-14 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
+              title="Ajustes"
+            >
+              <Settings className="w-6 h-6" />
+            </button>
+            <button
+              onClick={handleTogglePlay}
+              className="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
+              title={isPlaying ? 'Detener recorrido' : 'Iniciar recorrido'}
+            >
+              <Play className={`w-6 h-6 fill-current ${isPlaying ? 'animate-pulse' : ''}`} />
+            </button>
+            <button
+              onClick={handleReset}
+              className="w-14 h-14 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
+              title="Reiniciar acorde inicial"
+            >
+              <RotateCcw className="w-6 h-6" />
+            </button>
+            </div>
+          </div>
       </div>
     </div>
   );

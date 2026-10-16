@@ -238,12 +238,6 @@ export const Trainer: React.FC<TrainerProps> = ({
       onClick={() => setActiveDropdown(null)} // Cierra dropdowns al hacer clic fuera
     >
       <div className="w-full max-w-4xl flex flex-col items-center gap-8" onClick={(e) => e.stopPropagation()}>
-
-        <div className="w-full text-center">
-          <h1 className="text-3xl md:text-4xl font-serif text-zinc-900">Trainer</h1>
-          <p className="text-sm text-zinc-500 mt-1">Practica transiciones entre acordes con filtros y ejercicios de conducción de voces.</p>
-        </div>
-
         {/* Sección superior: nombre del acorde y puntos indicadores */}
         <div className="w-full flex items-center justify-between gap-4 px-2">
           {/* Sección que muestra el nombre del acorde */}

@@ -27,12 +27,12 @@ interface TrainerProps {
     colorful?: boolean;
     exerciseMode: ExerciseMode;
     strumSpeed: number;
+    tempoBpm: number;
   onOpenSettings: () => void;
 }
 
 interface TrainerPersistedState{
   activeFrets: (number | 'x')[];
-  dotCount: number;
   visualFilters: VisualFilter[];
 }
 
@@ -42,6 +42,7 @@ export const Trainer: React.FC<TrainerProps> = ({
   colorful,
   exerciseMode,
   strumSpeed,
+  tempoBpm,
   onOpenSettings,
 }) => {
 
@@ -53,7 +54,6 @@ export const Trainer: React.FC<TrainerProps> = ({
         const state = JSON.parse(saved);
         return {
           activeFrets: Array.isArray(state.activeFrets) ? state.activeFrets : [0, 0, 0, 0, 0, 0],
-          dotCount: typeof state.dotCount === 'number' ? state.dotCount : 2,
           visualFilters: Array.isArray(state.visualFilters) ? state.visualFilters : [],
         };
       }
@@ -62,7 +62,6 @@ export const Trainer: React.FC<TrainerProps> = ({
     }
     return {
       activeFrets: ([0, 0, 0, 0, 0, 0]),
-      dotCount: 1,
       visualFilters: [],
     };
   };
@@ -81,7 +80,8 @@ export const Trainer: React.FC<TrainerProps> = ({
   const [lastTransition, setLastTransition] = useState<VoiceLeadingMetrics | null>(null);
 
   // Estados para el contador de puntos
-  const [dotCount, setDotCount] = useState<number>(initTrainerState.dotCount);
+
+  const dotCount = 2;
   const [activeDotIndex, setActiveDotIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -137,7 +137,6 @@ export const Trainer: React.FC<TrainerProps> = ({
   useEffect(() => {
     const stateToSave: TrainerPersistedState = {
       activeFrets: currentFrets,
-      dotCount: dotCount,
       visualFilters: visualFilters,
     };
     localStorage.setItem(TRAINER_STORAGE_KEY, JSON.stringify(stateToSave));
@@ -172,10 +171,10 @@ export const Trainer: React.FC<TrainerProps> = ({
         // Avanza al siguiente punto y vuelve al 0 al llegar al total (dotCount)
         return (prev + 1) % dotCount;
       });
-    }, Math.max(600, strumSpeed*3)); // Cambia cada 3x el strum speed
+    }, 60000 / tempoBpm);
 
     return () => clearInterval(interval);
-  }, [isPlaying, dotCount]);
+  }, [isPlaying, dotCount, tempoBpm]);
 
   // SELECCION DE ACORDE EN CADA CICLO
   useEffect(() => {
@@ -225,9 +224,6 @@ export const Trainer: React.FC<TrainerProps> = ({
     setSelectedStringGroup(prev => prev.includes(strOption) ? prev.filter(value => value !== strOption) : [...prev, strOption]);
   };
 
-  const handleDecreaseDots = () => setDotCount((prev) => Math.max(2, prev - 1));
-  const handleIncreaseDots = () => setDotCount((prev) => Math.min(8, prev + 1));
-
   const toggleDropdown = (menu: 'root' | 'chordtype' | 'color' |'extension' | 'strings') => {
     setActiveDropdown((prev) => (prev === menu ? null : menu));
   };
@@ -238,51 +234,11 @@ export const Trainer: React.FC<TrainerProps> = ({
       onClick={() => setActiveDropdown(null)} // Cierra dropdowns al hacer clic fuera
     >
       <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8" onClick={(e) => e.stopPropagation()}>
-        {/* Sección superior: nombre del acorde y puntos indicadores */}
-        <div className="app-fretboard-header w-full flex items-center justify-between gap-4 px-2">
-          {/* Sección que muestra el nombre del acorde */}
-          <div className="min-w-0 flex items-center bg-white px-5 py-1.5 rounded-full shadow-xs border border-zinc-200">
-            {`${currentChord}`}
-          </div>
-
-          {/* Selector de Puntos (- [• • •] +) en Esquina Superior Derecha */}
-          <div className="shrink-0 flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-xs border border-zinc-200">
-            <button
-              onClick={handleDecreaseDots}
-              disabled={dotCount <= 2 || isPlaying}
-              className="w-6 h-6 rounded-full bg-zinc-100 hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-zinc-700 transition-all cursor-pointer"
-              title="Disminuir puntos"
-            >
-              <Minus className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Puntos Indicadores */}
-            <div className="flex items-center gap-1.5 px-1">
-              {Array.from({ length: dotCount }).map((_, index) => {
-                const isActive = index === activeDotIndex;
-                return (
-                  <div
-                    key={index}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                      isActive
-                        ? 'bg-blue-500 scale-125 shadow-[0_0_8px_rgba(59,130,246,0.8)]'
-                        : 'bg-zinc-400'
-                    }`}
-                  />
-                );
-              })}
+           <div className="app-fretboard-header relative group flex w-full items-center justify-center">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-center font-serif whitespace-nowrap overflow-visible px-8">
+                {`${currentChord}`}
+              </h2>
             </div>
-
-            <button
-              onClick={handleIncreaseDots}
-              disabled={dotCount >= 8 || isPlaying}
-              className="w-6 h-6 rounded-full bg-zinc-100 hover:bg-zinc-200 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-zinc-700 transition-all cursor-pointer"
-              title="Aumentar puntos"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
 
         {/* --- 2. CONTENEDOR DIAPASÓN --- */}
         <div className="relative w-full">

@@ -17,6 +17,7 @@ interface HarmonicPathProps {
   accidentals: AccidentalsPreference;
   colorful?: boolean;
   exerciseMode: ExerciseMode;
+  tempoBpm: number;
   onOpenSettings: () => void;
 }
 
@@ -113,6 +114,7 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
   accidentals,
   colorful,
   exerciseMode,
+  tempoBpm,
   onOpenSettings,
 }) => {
   const [currentFrets, setCurrentFrets] = useState<(number | 'x')[]>(STARTING_FRETS);
@@ -241,10 +243,10 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
       setLastTransition(getVoiceLeadingMetrics(currentFrets, selectedChord.frets));
       setCurrentFrets(selectedChord.frets);
       playChordSound(selectedChord.frets, 150, accidentals);
-    }, 1500);
+    }, 60000 / tempoBpm);
 
     return () => window.clearTimeout(timeout);
-  }, [currentFrets, matchingChords, isPlaying, exerciseMode, tabu, penalty, accidentals, scale, roots, colors, sevenths, requestedExtensions, progrCounter]);
+  }, [currentFrets, matchingChords, isPlaying, exerciseMode, tabu, penalty, accidentals, scale, roots, colors, sevenths, requestedExtensions, progrCounter, tempoBpm]);
 
   const handleReset = () => {
     setIsPlaying(false);

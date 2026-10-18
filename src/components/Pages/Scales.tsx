@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Play, Settings, Square } from 'lucide-react';
 import { BASE_NOTES, BASE_OCTAVES, CHROMATIC_FLATS, CHROMATIC_SHARPS } from '../Config';
 import { Fretboard } from '../utils/Fretboard';
@@ -21,14 +21,11 @@ interface ScalesProps {
   colorful?: boolean;
   onOpenSettings: () => void;
   bpm: number;
-  setBpm: (bpm: number) => void;
   metronomeEnabled: boolean;
-  autoTempo: boolean;
 }
 
 const EMPTY_FRETS: (number | 'x')[] = ['x', 'x', 'x', 'x', 'x', 'x'];
 const MAX_FRET = 15;
-const MAX_BPM = 220;
 
 const getOpenMidiNotes = () => BASE_NOTES.map((note, stringIndex) =>
   (BASE_OCTAVES[stringIndex] + 1) * 12 + CHROMATIC_SHARPS.indexOf(note)
@@ -48,9 +45,7 @@ export const Scales: React.FC<ScalesProps> = ({
   colorful,
   onOpenSettings,
   bpm,
-  setBpm,
   metronomeEnabled,
-  autoTempo,
 }) => {
   const [rootIndex, setRootIndex] = useState(0);
   const [selectedScale, setSelectedScale] = useState<ScaleId>('ionian');
@@ -62,7 +57,6 @@ export const Scales: React.FC<ScalesProps> = ({
   const [activePosition, setActivePosition] = useState<ScalePosition | null>(null);
   const [stepIndex, setStepIndex] = useState(1);
   const [direction, setDirection] = useState(1);
-  const guidedCycles = useRef(0);
   const scale = accidentals === 'flats' ? CHROMATIC_FLATS : CHROMATIC_SHARPS;
   const openMidiNotes = useMemo(() => getOpenMidiNotes(), []);
   const definition = SCALE_DEFINITIONS[selectedScale];
@@ -124,7 +118,6 @@ export const Scales: React.FC<ScalesProps> = ({
     setActivePosition(route[0]);
     if (metronomeEnabled) playMetronomeClick(true);
     playScalePosition(route[0], accidentals);
-    guidedCycles.current = 0;
     setIsPlaying(true);
   };
 
@@ -159,17 +152,13 @@ export const Scales: React.FC<ScalesProps> = ({
           setDirection(1);
           setStepIndex(Math.min(1, route.length - 1));
         }
-        guidedCycles.current++;
-        if (autoTempo && guidedCycles.current % 2 === 0) {
-          setBpm(Math.min(MAX_BPM, bpm + 4));
-        }
       } else {
         setStepIndex(index + direction);
       }
     }, 60000 / bpm);
 
     return () => window.clearTimeout(timeout);
-  }, [isPlaying, route, stepIndex, direction, routeMode, cagedFormIndex, pattern, rootIndex, scaleNotes, startDegreeIndex, openMidiNotes, bpm, accidentals, metronomeEnabled, autoTempo, setBpm]);
+  }, [isPlaying, route, stepIndex, direction, routeMode, cagedFormIndex, pattern, rootIndex, scaleNotes, startDegreeIndex, openMidiNotes, bpm, accidentals, metronomeEnabled]);
 
   const handleRootChange = (nextRoot: number) => {
     setRootIndex(nextRoot);

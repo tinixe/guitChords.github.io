@@ -18,9 +18,8 @@ export const App = () => {
   const [accidentals, setAccidentals] = useState<AccidentalsPreference>('sharps');
   const [colorful, setColorful] = useState<boolean>(true);
   const [strumSpeed, setStrumSpeed] = useState<number>(100);
-  const [scalesBpm, setScalesBpm] = useState(72);
+  const [tempoBpm, setTempoBpm] = useState(72);
   const [scalesMetronomeEnabled, setScalesMetronomeEnabled] = useState(true);
-  const [scalesAutoTempo, setScalesAutoTempo] = useState(false);
   const [exerciseMode, setExerciseMode] = useState<ExerciseMode>('common-tones');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [theme, setTheme] = useState<'day' | 'night'>(() => {
@@ -95,8 +94,8 @@ export const App = () => {
 
       <main className="app-main h-full">
         {activeTab === 'builder' && <Builder accidentals={accidentals} colorful={colorful} onOpenSettings={() => setIsSettingsOpen(true)} strumSpeed={strumSpeed} />}
-        {activeTab === 'trainer' && <Trainer accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} strumSpeed={strumSpeed} onOpenSettings={() => setIsSettingsOpen(true)} />}
-        {activeTab === 'harmonic-path' && <HarmonicPath accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} onOpenSettings={() => setIsSettingsOpen(true)} />}
+        {activeTab === 'trainer' && <Trainer accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} strumSpeed={strumSpeed} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
+        {activeTab === 'harmonic-path' && <HarmonicPath accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
         {activeTab === 'library' && <ChordLibrary accidentals={accidentals}/>}
       </main>
 
@@ -111,12 +110,10 @@ export const App = () => {
         setColorful={setColorful}
         exerciseMode={exerciseMode}
         setExerciseMode={setExerciseMode}
-        scalesBpm={scalesBpm}
-        setScalesBpm={setScalesBpm}
+        tempoBpm={tempoBpm}
+        setTempoBpm={setTempoBpm}
         scalesMetronomeEnabled={scalesMetronomeEnabled}
         setScalesMetronomeEnabled={setScalesMetronomeEnabled}
-        scalesAutoTempo={scalesAutoTempo}
-        setScalesAutoTempo={setScalesAutoTempo}
       />
     </div>
   );

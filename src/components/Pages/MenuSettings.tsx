@@ -15,12 +15,10 @@ interface SettingsBuilderProps {
   setColorful: (colorful: boolean) => void;
   exerciseMode: ExerciseMode;
   setExerciseMode: (mode: ExerciseMode) => void;
-  scalesBpm: number;
-  setScalesBpm: (bpm: number) => void;
+  tempoBpm: number;
+  setTempoBpm: (bpm: number) => void;
   scalesMetronomeEnabled: boolean;
   setScalesMetronomeEnabled: (enabled: boolean) => void;
-  scalesAutoTempo: boolean;
-  setScalesAutoTempo: (enabled: boolean) => void;
 }
 
 export const MenuSettings: React.FC<SettingsBuilderProps> = ({
@@ -34,12 +32,10 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
   setColorful,
   exerciseMode,
   setExerciseMode,
-  scalesBpm,
-  setScalesBpm,
+  tempoBpm,
+  setTempoBpm,
   scalesMetronomeEnabled,
   setScalesMetronomeEnabled,
-  scalesAutoTempo,
-  setScalesAutoTempo,
 }) => {
   if (!isOpen) return null;
 
@@ -160,7 +156,7 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
             {/* 4. Selector del modo de ejercicio */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-zinc-700">
-                Modo de ejercicio
+                Modo de recomendación
               </label>
               <div className="grid grid-cols-3 gap-1 p-1 bg-zinc-100 rounded-lg">
                 {([
@@ -197,17 +193,17 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
                   <Gauge className="w-4 h-4 text-zinc-500" />
                   Tempo
                 </label>
-                <span className="text-xs font-mono text-zinc-500">{scalesBpm} BPM</span>
+                <span className="text-xs font-mono text-zinc-500">{tempoBpm} BPM</span>
               </div>
               <input
                 type="range"
                 min="40"
                 max="220"
                 step="2"
-                value={scalesBpm}
-                onChange={event => setScalesBpm(Number(event.target.value))}
+                value={tempoBpm}
+                onChange={event => setTempoBpm(Number(event.target.value))}
                 className="w-full accent-zinc-900 h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer"
-                aria-label="Tempo de escalas"
+                aria-label="Tempo global"
               />
               <div className="flex justify-between text-[10px] text-zinc-400 font-mono">
                 <span>40 BPM</span>
@@ -216,10 +212,6 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
               <label className="flex items-center justify-between text-sm text-zinc-700">
                 Metrónomo
                 <input type="checkbox" checked={scalesMetronomeEnabled} onChange={event => setScalesMetronomeEnabled(event.target.checked)} />
-              </label>
-              <label className="flex items-center justify-between text-sm text-zinc-700">
-                Aumentar tempo automáticamente
-                <input type="checkbox" checked={scalesAutoTempo} onChange={event => setScalesAutoTempo(event.target.checked)} />
               </label>
             </div>
 

@@ -130,6 +130,39 @@ html[data-theme="night"] [class~="text-zinc-400"] {
   color: #8494a9 !important;
 }
 
+html[data-theme="night"] .trainer-filter-dialog h3,
+html[data-theme="night"] .trainer-filter-dialog > .flex > button {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="night"] .trainer-filter-dropdown [class~="text-zinc-700"] {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="night"] .trainer-filter-dropdown [class~="text-zinc-500"] {
+  color: #a8b6c8 !important;
+}
+
+html[data-theme="night"] .trainer-filter-dropdown button:hover {
+  background-color: #2b3c50 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="night"] .trainer-filter-dropdown button[class~="bg-zinc-900"] {
+  background-color: #7dd3fc !important;
+  color: #102234 !important;
+}
+
+html[data-theme="night"] .trainer-filter-dropdown button[class~="bg-zinc-900"]:hover {
+  background-color: #bae6fd !important;
+  color: #102234 !important;
+}
+
+html[data-theme="night"] .trainer-filter-dialog button:disabled {
+  color: #a8b6c8 !important;
+  opacity: 1;
+}
+
 html[data-theme="night"] [class*="border-zinc-100"],
 html[data-theme="night"] [class*="border-zinc-200"],
 html[data-theme="night"] [class*="border-zinc-300"] {

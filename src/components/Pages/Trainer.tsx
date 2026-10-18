@@ -352,7 +352,7 @@ export const Trainer: React.FC<TrainerProps> = ({
           }}
         >
           <div
-            className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl flex flex-col gap-5"
+            className="trainer-filter-dialog bg-white rounded-xl p-6 w-full max-w-lg shadow-xl flex flex-col gap-5"
             onClick={(event) => event.stopPropagation()}
           >
             <h3 className="text-lg font-serif font-semibold text-zinc-900">
@@ -365,7 +365,7 @@ export const Trainer: React.FC<TrainerProps> = ({
                   {selectedRoot.length > 0 ? selectedRoot.join(', ') : 'Tónica'}
                 </button>
                 {activeDropdown === 'root' && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 grid grid-cols-3 gap-1">
+                  <div className="trainer-filter-dropdown absolute left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 grid grid-cols-3 gap-1">
                     <button onClick={() => setSelectedRoot([])} className="col-span-3 p-2 text-xs font-medium rounded-xl text-left text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer">Borrar filtros</button>
                     {SCALE.map(note => (
                       <button key={note} onClick={() => setSelectedRoot(prev => prev.includes(note) ? prev.filter(value => value !== note) : [...prev, note])} className={`p-2 text-xs font-semibold rounded-xl text-center hover:bg-zinc-100 transition-colors cursor-pointer ${selectedRoot.includes(note) ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'text-zinc-700'}`}>{note}</button>
@@ -379,7 +379,7 @@ export const Trainer: React.FC<TrainerProps> = ({
                   {selectedChordType.length > 0 ? selectedChordType.join(', ') : 'Tipo'}
                 </button>
                 {activeDropdown === 'chordtype' && (
-                  <div className="absolute left-0 mt-2 w-40 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
+                  <div className="trainer-filter-dropdown absolute left-0 mt-2 w-40 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
                     <button onClick={() => setselectedChordType([])} className="p-2.5 text-xs font-medium rounded-xl text-left text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer">Borrar filtros</button>
                     {(['Normal', 'Triada', 'Drop2', 'Drop3', 'Drop2&4'] as ChordTypeOption[]).map(type => (
                       <button key={type} onClick={() => handleSelectChordType(type)} className={`p-2.5 text-sm font-medium rounded-xl text-left hover:bg-zinc-100 transition-colors cursor-pointer ${selectedChordType.includes(type) ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'text-zinc-700'}`}>{type}</button>
@@ -393,7 +393,7 @@ export const Trainer: React.FC<TrainerProps> = ({
                   {selectedColor.length > 0 ? selectedColor.join(', ') : 'Color'}
                 </button>
                 {activeDropdown === 'color' && (
-                  <div className="absolute left-0 mt-2 w-40 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
+                  <div className="trainer-filter-dropdown absolute left-0 mt-2 w-40 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
                     <button onClick={() => setselectedColor([])} className="p-2.5 text-xs font-medium rounded-xl text-left text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer">Borrar filtros</button>
                     {(['Mayor', 'Menor', 'Suspendido', 'Disminuido', 'Aumentado'] as ChordColorOption[]).map(color => (
                       <button key={color} onClick={() => handleSelectColor(color)} className={`p-2.5 text-sm font-medium rounded-xl text-left hover:bg-zinc-100 transition-colors cursor-pointer ${selectedColor.includes(color) ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'text-zinc-700'}`}>{color}</button>
@@ -407,7 +407,7 @@ export const Trainer: React.FC<TrainerProps> = ({
                   {selectedExtension.length > 0 ? selectedExtension.join(', ') : 'Extensión'}
                 </button>
                 {activeDropdown === 'extension' && !isExtensionDisabled && (
-                  <div className="absolute left-0 mt-2 w-40 max-h-64 overflow-y-auto bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
+                  <div className="trainer-filter-dropdown absolute left-0 mt-2 w-40 max-h-64 overflow-y-auto bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
                     <button onClick={() => setSelectedExtension([])} className="p-2.5 text-xs font-medium rounded-xl text-left text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer">Borrar filtros</button>
                     {extensions.map(extension => (
                       <button key={extension} onClick={() => handleSelectExtension(extension)} className={`p-2.5 text-sm font-medium rounded-xl text-left hover:bg-zinc-100 transition-colors cursor-pointer ${selectedExtension.includes(extension) ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'text-zinc-700'}`}>{extension}</button>
@@ -421,7 +421,7 @@ export const Trainer: React.FC<TrainerProps> = ({
                   {selectedStringGroup.length > 0 ? selectedStringGroup.join(', ') : 'Cuerdas'}
                 </button>
                 {activeDropdown === 'strings' && !isCuerdasDisabled && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
+                  <div className="trainer-filter-dropdown absolute left-0 mt-2 w-48 bg-white border border-zinc-200 rounded-2xl shadow-lg z-30 p-2 flex flex-col gap-1">
                     <button onClick={() => setSelectedStringGroup([])} className="p-2.5 text-xs font-medium rounded-xl text-left text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer">Borrar filtros</button>
                     {stringOptions.map(option => (
                       <button key={option} onClick={() => handleSelectStringGroup(option)} className={`p-2.5 text-sm font-medium rounded-xl text-left hover:bg-zinc-100 transition-colors cursor-pointer ${selectedStringGroup.includes(option) ? 'bg-zinc-900 text-white hover:bg-zinc-800' : 'text-zinc-700'}`}>{option}</button>

@@ -144,7 +144,7 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
 
 
   return (
-    <section className="w-full bg-zinc-200 py-20 px-6 border-t border-zinc-300 min-h-[660px]">
+    <section className="w-full bg-zinc-200 py-25 px-6 border-t border-zinc-300 min-h-[660px]">
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
         
         {/* Título de la Sección */}

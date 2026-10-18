@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pencil, Play, Save, Settings, Trash2} from 'lucide-react';
+import { CheckCircle2, Pencil, Play, Save, Settings, Trash2} from 'lucide-react';
 import { playChordSound } from '../utils/SoundLogic';
 import { CHROMATIC_FLATS, CHROMATIC_SHARPS } from '../Config';
 import { saveChord, generateChordTags, saveCustomChordName } from '../Database';
@@ -56,10 +56,27 @@ export const Builder: React.FC<BuilderProps> = ({
   const [selectedFrets, setSelectedFrets] = useState<(number | 'x')[]>(initBuilderState.selectedFrets);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const [saveNotification, setSaveNotification] = useState<{ message: string } | null>(null);
+  const [isSaveNotificationVisible, setIsSaveNotificationVisible] = useState(false);
   const [customChord, setCustomChord] = useState<{ rootIndex: number, extension: string } | null>(initBuilderState.customChord);
   const [tempRootIndex, setTempRootIndex] = useState<number>(0);
   const [tempExtension, setTempExtension] = useState<string>('');
   const [chordName, setChordName] = useState('');
+
+  useEffect(() => {
+    if (!saveNotification) return;
+
+    const enterFrame = window.requestAnimationFrame(() => {
+      setIsSaveNotificationVisible(true);
+    });
+    const hideTimeout = window.setTimeout(() => setIsSaveNotificationVisible(false), 2700);
+    const removeTimeout = window.setTimeout(() => setSaveNotification(null), 3000);
+    return () => {
+      window.cancelAnimationFrame(enterFrame);
+      window.clearTimeout(hideTimeout);
+      window.clearTimeout(removeTimeout);
+    };
+  }, [saveNotification]);
 
   // Extraemos el nombre del acorde
   const SCALE = accidentals === 'flats' ? CHROMATIC_FLATS : CHROMATIC_SHARPS;
@@ -167,6 +184,8 @@ export const Builder: React.FC<BuilderProps> = ({
         const notes = selectedFrets.map((fret, idx) => getNoteName(idx, fret, accidentals));
         onSave({ name: displayChordName, notes });
       }
+
+      setSaveNotification({ message: 'Acorde guardado con éxito' });
 
     } catch(error) {
       console.error('Error al guardar el acorde en IndexedDB: ', error);
@@ -337,6 +356,21 @@ export const Builder: React.FC<BuilderProps> = ({
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {saveNotification && (
+            <div
+              role="status"
+              aria-live="polite"
+              className={`fixed bottom-6 right-6 z-[60] flex max-w-[calc(100vw-3rem)] items-center gap-1 rounded-2xl border border-sky-300/20 bg-[#101722] px-6 py-4 text-sm font-medium text-white shadow-2xl shadow-slate-950/25 transition-all duration-300 ease-out motion-reduce:transition-none ${
+                isSaveNotificationVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+              }`}
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-left rounded-xl bg-sky-400/15 text-sky-300">
+                <CheckCircle2 size={20} aria-hidden="false" />
+              </span>
+              <span>{saveNotification.message}</span>
             </div>
           )}
         </div>

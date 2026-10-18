@@ -218,8 +218,8 @@ export const Builder: React.FC<BuilderProps> = ({
         <div className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center p-8 font-sans pt-0">
           <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8">
             {/* Contenedor del Título + Botón Lápiz */}
-            <div className="app-fretboard-header relative group flex w-full items-center justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-center font-serif whitespace-nowrap overflow-visible px-8">
+            <div className="app-fretboard-header group flex w-full items-center justify-center gap-2">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-center font-serif whitespace-nowrap overflow-visible">
                 {displayChordName}
               </h2>
 
@@ -231,7 +231,7 @@ export const Builder: React.FC<BuilderProps> = ({
                     if(hasSelectedNotes) setIsEditingName(true);
                   }
                 }
-                className="absolute -top-2 -right-2 w-8 h-8 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full flex items-center justify-center transition-colors shadow-sm"
+                className="w-8 h-8 shrink-0 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full flex items-center justify-center transition-colors shadow-sm"
                 title="Personalizar nombre del acorde"
               >
                 <Pencil className="w-4 h-4" />

@@ -69,7 +69,7 @@ export const App = () => {
     <div className="app-shell min-h-screen bg-[#f3f7fb] text-slate-900">
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <div className="fixed right-4 top-3 z-50 flex items-center gap-2 sm:right-6 sm:top-4">
+      <div className="fixed right-4 top-3 z-50 flex items-center gap-2 sm:right-6">
         <button
           type="button"
           aria-label={theme === 'day' ? 'Activar modo noche' : 'Activar modo día'}

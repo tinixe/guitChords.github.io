@@ -81,7 +81,7 @@ export const Trainer: React.FC<TrainerProps> = ({
 
   // Estados para el contador de puntos
 
-  const dotCount = 2;
+  const dotCount = 4;
   const [activeDotIndex, setActiveDotIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 

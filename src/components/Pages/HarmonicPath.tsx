@@ -243,7 +243,7 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
       setLastTransition(getVoiceLeadingMetrics(currentFrets, selectedChord.frets));
       setCurrentFrets(selectedChord.frets);
       playChordSound(selectedChord.frets, 150, accidentals);
-    }, 60000 / tempoBpm);
+    }, 4 * 60000 / tempoBpm);
 
     return () => window.clearTimeout(timeout);
   }, [currentFrets, matchingChords, isPlaying, exerciseMode, tabu, penalty, accidentals, scale, roots, colors, sevenths, requestedExtensions, progrCounter, tempoBpm]);

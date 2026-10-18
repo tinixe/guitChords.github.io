@@ -57,6 +57,107 @@ body {
   color: #334155;
 }
 
+html[data-theme="night"] {
+  color-scheme: dark;
+  background: #0b111a;
+  color: #e2e8f0;
+}
+
+html[data-theme="night"] body,
+html[data-theme="night"] .app-shell {
+  background: #0b111a;
+  color: #e2e8f0;
+}
+
+html[data-theme="night"] .app-main > div[class*="min-h-screen"],
+html[data-theme="night"] .app-main > section {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(14, 116, 144, 0.14), transparent 38rem),
+    #0b111a;
+  border-color: #243244;
+}
+
+html[data-theme="night"] [class~="bg-white"],
+html[data-theme="night"] [class~="bg-white/80"],
+html[data-theme="night"] [class~="bg-white/90"],
+html[data-theme="night"] [class~="bg-white/95"] {
+  background-color: #172231 !important;
+}
+
+html[data-theme="night"] [class~="bg-zinc-100"],
+html[data-theme="night"] [class~="bg-zinc-100/80"] {
+  background-color: #1b2939 !important;
+}
+
+html[data-theme="night"] [class~="bg-zinc-200"] {
+  background-color: #111b28 !important;
+}
+
+html[data-theme="night"] [class~="bg-zinc-50"] {
+  background-color: #131e2c !important;
+}
+
+html[data-theme="night"] [class~="bg-red-200"] {
+  background-color: #542b37 !important;
+}
+
+html[data-theme="night"] [class~="bg-zinc-900"] {
+  background-color: #0284c7 !important;
+}
+
+html[data-theme="night"] [class~="text-black"],
+html[data-theme="night"] [class~="text-zinc-900"],
+html[data-theme="night"] [class~="text-zinc-800"],
+html[data-theme="night"] [class~="text-zinc-700"],
+html[data-theme="night"] [class~="text-zinc-600"],
+html[data-theme="night"] .app-main h2 {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="night"] [class~="text-zinc-500"] {
+  color: #a8b6c8 !important;
+}
+
+html[data-theme="night"] [class~="text-zinc-400"] {
+  color: #8494a9 !important;
+}
+
+html[data-theme="night"] [class*="border-zinc-100"],
+html[data-theme="night"] [class*="border-zinc-200"],
+html[data-theme="night"] [class*="border-zinc-300"] {
+  border-color: #304055 !important;
+}
+
+html[data-theme="night"] input,
+html[data-theme="night"] select,
+html[data-theme="night"] textarea {
+  color: #e2e8f0;
+}
+
+html[data-theme="night"] input::placeholder,
+html[data-theme="night"] textarea::placeholder {
+  color: #8494a9;
+}
+
+html[data-theme="night"] input[type="range"] {
+  accent-color: #38bdf8;
+}
+
+html[data-theme="night"] .trainer-filter-chip {
+  background-color: #bae6fd !important;
+  color: #102234 !important;
+}
+
+html[data-theme="night"] .trainer-filter-chip:hover {
+  background-color: #7dd3fc !important;
+}
+
+html[data-theme-transitioning] *,
+html[data-theme-transitioning] *::before,
+html[data-theme-transitioning] *::after {
+  transition-property: transform, opacity, box-shadow !important;
+}
+
 /* Ocultar flechas de los input de tipo número */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

@@ -300,11 +300,6 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
             colorful={colorful}
             totalFrets={17}
           />
-          {!isPlaying && (
-            <p className="text-center text-xs text-zinc-500 mt-3">
-              Selecciona el acorde inicial directamente en el diapasón.
-            </p>
-          )}
           {lastTransition && (
             <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-zinc-500">
               <span>{lastTransition.commonNotes} notas comunes</span>
@@ -318,24 +313,24 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
           <div className="flex items-center justify-center gap-6 mb-16">
             <button
               onClick={onOpenSettings}
-              className="w-14 h-14 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
+              className="w-14 h-14 bg-zinc-100/80 hover:bg-zinc-200 text-zinc-900 rounded-full flex items-center justify-center opacity-100 shadow-sm active:scale-95 transition-all"
               title="Ajustes"
             >
-              <Settings className="w-6 h-6" />
+              <Settings className="w-7 h-7" />
             </button>
             <button
               onClick={handleTogglePlay}
-              className="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
+              className="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full flex items-center justify-center opacity-100 shadow-md active:scale-95 transition-all"
               title={isPlaying ? 'Detener recorrido' : 'Iniciar recorrido'}
             >
-              <Play className={`w-6 h-6 fill-current ${isPlaying ? 'animate-pulse' : ''}`} />
+              <Play className={`w-6 h-6 fill-current ml-0.5 ${isPlaying ? 'animate-pulse' : ''}`} />
             </button>
             <button
               onClick={handleReset}
-              className="w-14 h-14 bg-zinc-100 hover:bg-zinc-200 rounded-full flex items-center justify-center shadow-sm active:scale-95 transition-all"
+              className="w-14 h-14 bg-zinc-100/80 hover:bg-zinc-200 text-zinc-900 rounded-full flex items-center justify-center opacity-100 shadow-sm active:scale-95 transition-all"
               title="Reiniciar acorde inicial"
             >
-              <RotateCcw className="w-6 h-6" />
+              <RotateCcw className="w-8 h-8" />
             </button>
             </div>
           </div>

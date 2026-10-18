@@ -356,27 +356,27 @@ export const Trainer: React.FC<TrainerProps> = ({
                     Filtro {index + 1}
                   </span>
                   {filter.root.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
+                    <span className="trainer-filter-chip px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
                       Tónica: {filter.root.join(', ')}
                     </span>
                   )}
                   {filter.chordType.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
+                    <span className="trainer-filter-chip px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
                       Tipo: {filter.chordType.join(', ')}
                     </span>
                   )}
                   {filter.color.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
+                    <span className="trainer-filter-chip px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
                       Color: {filter.color.join(', ')}
                     </span>
                   )}
                   {filter.extension.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
+                    <span className="trainer-filter-chip px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
                       Extensión: {filter.extension.join(', ')}
                     </span>
                   )}
                   {filter.stringGroup.length > 0 && (
-                    <span className="px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
+                    <span className="trainer-filter-chip px-3 py-1 rounded-full bg-[#e0f8ff] text-xs font-medium text-zinc-800">
                       Cuerdas: {filter.stringGroup.join(', ')}
                     </span>
                   )}
@@ -405,7 +405,7 @@ export const Trainer: React.FC<TrainerProps> = ({
 
             <div className="flex flex-wrap gap-3">
               <div className="relative">
-                <button onClick={() => toggleDropdown('root')} className="px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
+                <button onClick={() => toggleDropdown('root')} className="trainer-filter-chip px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
                   {selectedRoot.length > 0 ? selectedRoot.join(', ') : 'Tónica'}
                 </button>
                 {activeDropdown === 'root' && (
@@ -419,7 +419,7 @@ export const Trainer: React.FC<TrainerProps> = ({
               </div>
 
               <div className="relative">
-                <button onClick={() => toggleDropdown('chordtype')} className="px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
+                <button onClick={() => toggleDropdown('chordtype')} className="trainer-filter-chip px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
                   {selectedChordType.length > 0 ? selectedChordType.join(', ') : 'Tipo'}
                 </button>
                 {activeDropdown === 'chordtype' && (
@@ -433,7 +433,7 @@ export const Trainer: React.FC<TrainerProps> = ({
               </div>
 
               <div className="relative">
-                <button onClick={() => toggleDropdown('color')} className="px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
+                <button onClick={() => toggleDropdown('color')} className="trainer-filter-chip px-5 py-2.5 rounded-full bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 text-sm font-medium transition-all shadow-xs cursor-pointer">
                   {selectedColor.length > 0 ? selectedColor.join(', ') : 'Color'}
                 </button>
                 {activeDropdown === 'color' && (
@@ -447,7 +447,7 @@ export const Trainer: React.FC<TrainerProps> = ({
               </div>
 
               <div className="relative">
-                <button disabled={isExtensionDisabled} onClick={() => toggleDropdown('extension')} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-xs ${isExtensionDisabled ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed opacity-60' : 'bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 cursor-pointer'}`}>
+                <button disabled={isExtensionDisabled} onClick={() => toggleDropdown('extension')} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-xs ${isExtensionDisabled ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed opacity-60' : 'trainer-filter-chip bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 cursor-pointer'}`}>
                   {selectedExtension.length > 0 ? selectedExtension.join(', ') : 'Extensión'}
                 </button>
                 {activeDropdown === 'extension' && !isExtensionDisabled && (
@@ -461,7 +461,7 @@ export const Trainer: React.FC<TrainerProps> = ({
               </div>
 
               <div className="relative">
-                <button disabled={isCuerdasDisabled} onClick={() => toggleDropdown('strings')} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-xs ${isCuerdasDisabled ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed opacity-60' : 'bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 cursor-pointer'}`}>
+                <button disabled={isCuerdasDisabled} onClick={() => toggleDropdown('strings')} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-xs ${isCuerdasDisabled ? 'bg-zinc-100 text-zinc-400 cursor-not-allowed opacity-60' : 'trainer-filter-chip bg-[#e0f8ff] hover:bg-[#cbf2fc] text-zinc-800 cursor-pointer'}`}>
                   {selectedStringGroup.length > 0 ? selectedStringGroup.join(', ') : 'Cuerdas'}
                 </button>
                 {activeDropdown === 'strings' && !isCuerdasDisabled && (

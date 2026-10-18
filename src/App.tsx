@@ -8,10 +8,11 @@ import type { TabType } from './components/Navigation';
 import { Trainer } from './components/Pages/Trainer';
 import { HarmonicPath } from './components/Pages/HarmonicPath';
 import type { ExerciseMode } from './components/Config';
-import { CircleHelp } from 'lucide-react';
+import { CircleHelp, Moon, Sun } from 'lucide-react';
 import { ChordLibrary } from './components/Pages/ChordLibrary';
 // Persistencia
 const NAVIGATION_STORAGE_KEY = 'active_tab_v1';
+const THEME_STORAGE_KEY = 'color_theme_v1';
 
 export const App = () => {
   const [accidentals, setAccidentals] = useState<AccidentalsPreference>('sharps');
@@ -22,6 +23,14 @@ export const App = () => {
   const [scalesAutoTempo, setScalesAutoTempo] = useState(false);
   const [exerciseMode, setExerciseMode] = useState<ExerciseMode>('common-tones');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [theme, setTheme] = useState<'day' | 'night'>(() => {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY) === 'night' ? 'night' : 'day';
+    } catch (error) {
+      console.error('Error cargando el tema visual:', error);
+      return 'day';
+    }
+  });
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     try {
       const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
@@ -33,19 +42,56 @@ export const App = () => {
     localStorage.setItem(NAVIGATION_STORAGE_KEY, activeTab);
   }, [activeTab]);
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (error) {
+      console.error('Error guardando el tema visual:', error);
+    }
+  }, [theme]);
+
+  const handleThemeToggle = () => {
+    const nextTheme = theme === 'day' ? 'night' : 'day';
+    const root = document.documentElement;
+    root.dataset.themeTransitioning = 'true';
+    root.dataset.theme = nextTheme;
+    setTheme(nextTheme);
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        delete root.dataset.themeTransitioning;
+      });
+    });
+  };
+
 
   return (
     <div className="app-shell min-h-screen bg-[#f3f7fb] text-slate-900">
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <button
-        type="button"
-        aria-label="Ayuda"
-        title="Ayuda"
-        className="fixed right-4 top-3 z-50 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 shadow-sm transition-colors hover:border-sky-400/40 hover:bg-sky-400/10 hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 sm:right-6 sm:top-4"
-      >
-        <CircleHelp size={21} aria-hidden="true" />
-      </button>
+      <div className="fixed right-4 top-3 z-50 flex items-center gap-2 sm:right-6 sm:top-4">
+        <button
+          type="button"
+          aria-label={theme === 'day' ? 'Activar modo noche' : 'Activar modo día'}
+          aria-pressed={theme === 'night'}
+          title={theme === 'day' ? 'Activar modo noche' : 'Activar modo día'}
+          onClick={handleThemeToggle}
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 shadow-sm transition-colors hover:border-sky-400/40 hover:bg-sky-400/10 hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+        >
+          {theme === 'day'
+            ? <Moon size={20} aria-hidden="true" />
+            : <Sun size={20} aria-hidden="true" />}
+        </button>
+        <button
+          type="button"
+          aria-label="Ayuda"
+          title="Ayuda"
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 shadow-sm transition-colors hover:border-sky-400/40 hover:bg-sky-400/10 hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+        >
+          <CircleHelp size={21} aria-hidden="true" />
+        </button>
+      </div>
 
       <main className="app-main h-full">
         {activeTab === 'builder' && <Builder accidentals={accidentals} colorful={colorful} onOpenSettings={() => setIsSettingsOpen(true)} strumSpeed={strumSpeed} />}

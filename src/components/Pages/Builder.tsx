@@ -249,14 +249,14 @@ export const Builder: React.FC<BuilderProps> = ({
               />
 
             {/* Botonera de acciones (Settings, Play, Guardar, Borrar) */}
-            <div className="flex items-center justify-center gap-6 pt-4 mb-16">
+            <div className="flex items-center justify-center gap-6 mt-2 mb-16">
               {/* Botón de Settings */}
               <button
                 onClick={onOpenSettings}
                 className="w-14 h-14 bg-zinc-100 hover:bg-zinc-200 text-white rounded-full flex items-center justify-center transition-all shadow-md active:scale-95"
                 title="Ajustes"
               >
-                <Settings className="w-8 h-8 text-black" />
+                <Settings className="w-7 h-7 text-black" />
               </button>
               
               {/* Botón Reproducir Sonido */}
@@ -274,17 +274,17 @@ export const Builder: React.FC<BuilderProps> = ({
                 className="w-14 h-14 bg-zinc-100/80 hover:bg-zinc-200 text-zinc-900 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-95"
                 title="Guardar acorde"
               >
-                <Save className="w-6 h-6" />
+                <Save className="w-8 h-8" />
               </button>
 
-              {/* Botón Resetear Diapasón */}
+              {/* Botón Resetear Diapasón
               <button
                 onClick={handleResetBuilder}
-                className="w-14 h-14 bg-red-200/80 hover:bg-red-300 text-zinc-900 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-95"
+                className="w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-all shadow-sm active:scale-95"
                 title="Resetear diapasón"
               >
                 <Trash2 className="w-6 h-6" />
-              </button>
+              </button> */}
               </div>
             </div>
 

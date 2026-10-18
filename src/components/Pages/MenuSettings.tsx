@@ -195,7 +195,7 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-zinc-700 flex items-center gap-2">
                   <Gauge className="w-4 h-4 text-zinc-500" />
-                  Tempo de escalas
+                  Tempo
                 </label>
                 <span className="text-xs font-mono text-zinc-500">{scalesBpm} BPM</span>
               </div>

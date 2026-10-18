@@ -19,7 +19,6 @@ export const App = () => {
   const [colorful, setColorful] = useState<boolean>(true);
   const [strumSpeed, setStrumSpeed] = useState<number>(100);
   const [tempoBpm, setTempoBpm] = useState(72);
-  const [scalesMetronomeEnabled, setScalesMetronomeEnabled] = useState(true);
   const [exerciseMode, setExerciseMode] = useState<ExerciseMode>('common-tones');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [theme, setTheme] = useState<'day' | 'night'>(() => {
@@ -33,7 +32,9 @@ export const App = () => {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     try {
       const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
-      return (saved as TabType) || 'builder';
+      return saved === 'trainer' || saved === 'harmonic-path' || saved === 'library'
+        ? saved
+        : 'builder';
     } catch { return 'builder'; }
   })
 
@@ -112,8 +113,6 @@ export const App = () => {
         setExerciseMode={setExerciseMode}
         tempoBpm={tempoBpm}
         setTempoBpm={setTempoBpm}
-        scalesMetronomeEnabled={scalesMetronomeEnabled}
-        setScalesMetronomeEnabled={setScalesMetronomeEnabled}
       />
     </div>
   );

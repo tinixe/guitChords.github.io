@@ -190,7 +190,7 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
             visibleChords.map((chord) => (
               <div 
                 key={chord.id} 
-                className="relative group flex flex-col gap-2 p-4 bg-zinc-100 rounded-2xl border border-zinc-300/80 shadow-sm hover:shadow-md transition-shadow"
+                className="chord-library-card relative group flex flex-col gap-2 p-4 bg-zinc-100 rounded-2xl border border-zinc-300/80 shadow-sm hover:z-20 hover:shadow-md focus-within:z-20 transition-shadow"
                 >
                 {/* Botón de Borrado */}
                 <button
@@ -221,6 +221,22 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
 
                 {/* Diagrama Adaptativo */}
                 <MiniFretboard rootIndex={chord.rootIndex} figura={chord.figura} />
+
+                {/* Etiquetas del acorde: aparecen al pasar el cursor o enfocar la tarjeta */}
+                <div className="invisible absolute left-0 right-0 top-full z-20 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                  <div className="flex flex-wrap gap-1.5 rounded-2xl border border-zinc-200 bg-white p-3 shadow-lg">
+                    {chord.tags.length > 0 ? chord.tags.map(tag => (
+                      <span
+                        key={tag}
+                        className="trainer-filter-chip rounded-full bg-[#e0f8ff] px-3 py-1 text-xs font-medium text-zinc-800"
+                      >
+                        {tag}
+                      </span>
+                    )) : (
+                      <span className="text-xs text-zinc-500">Sin etiquetas</span>
+                    )}
+                  </div>
+                </div>
               </div>
             ))
           ) : (

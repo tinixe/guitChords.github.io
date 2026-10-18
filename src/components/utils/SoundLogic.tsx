@@ -113,21 +113,3 @@ export const playChordSound = async (
     stringCount++;
   });
 };
-
-export const playMetronomeClick = (accent = false) => {
-  const ctx = getAudioContext();
-  const oscillator = ctx.createOscillator();
-  const gain = ctx.createGain();
-  const startTime = ctx.currentTime;
-  const endTime = startTime + 0.055;
-
-  oscillator.type = 'sine';
-  oscillator.frequency.setValueAtTime(accent ? 1450 : 950, startTime);
-  gain.gain.setValueAtTime(0.0001, startTime);
-  gain.gain.exponentialRampToValueAtTime(accent ? 0.22 : 0.12, startTime + 0.004);
-  gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-  oscillator.start(startTime);
-  oscillator.stop(endTime);
-};

@@ -35,6 +35,10 @@ body {
   min-height: 4.5rem;
 }
 
+.chord-library-card:hover {
+  background-color: #e4e4e7;
+}
+
 .app-main h2 {
   color: #101b2e;
   font-family: inherit;
@@ -87,6 +91,10 @@ html[data-theme="night"] [class~="bg-white/95"] {
 html[data-theme="night"] [class~="bg-zinc-100"],
 html[data-theme="night"] [class~="bg-zinc-100/80"] {
   background-color: #1b2939 !important;
+}
+
+html[data-theme="night"] .chord-library-card:hover {
+  background-color: #2b3c50 !important;
 }
 
 html[data-theme="night"] [class~="bg-zinc-200"] {

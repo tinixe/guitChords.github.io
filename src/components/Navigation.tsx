@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { Guitar, Menu, X } from 'lucide-react';
 
 // (D)rop (Voicings), (A)ll (C)hords
-export type TabType = 'builder' | 'trainer' | 'harmonic-path' | 'library' | 'scales';
+export type TabType = 'builder' | 'trainer' | 'harmonic-path' | 'library';
 
 interface NavigationProps {
   activeTab: TabType;

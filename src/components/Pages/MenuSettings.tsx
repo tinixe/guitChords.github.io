@@ -17,8 +17,6 @@ interface SettingsBuilderProps {
   setExerciseMode: (mode: ExerciseMode) => void;
   tempoBpm: number;
   setTempoBpm: (bpm: number) => void;
-  scalesMetronomeEnabled: boolean;
-  setScalesMetronomeEnabled: (enabled: boolean) => void;
 }
 
 export const MenuSettings: React.FC<SettingsBuilderProps> = ({
@@ -34,8 +32,6 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
   setExerciseMode,
   tempoBpm,
   setTempoBpm,
-  scalesMetronomeEnabled,
-  setScalesMetronomeEnabled,
 }) => {
   if (!isOpen) return null;
 
@@ -209,10 +205,6 @@ export const MenuSettings: React.FC<SettingsBuilderProps> = ({
                 <span>40 BPM</span>
                 <span>220 BPM</span>
               </div>
-              <label className="flex items-center justify-between text-sm text-zinc-700">
-                Metrónomo
-                <input type="checkbox" checked={scalesMetronomeEnabled} onChange={event => setScalesMetronomeEnabled(event.target.checked)} />
-              </label>
             </div>
 
           </div>

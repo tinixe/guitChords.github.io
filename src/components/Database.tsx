@@ -162,7 +162,8 @@ export const generateChordTags = (
   else if (baseName.includes('dim')) { tags.push('Disminuido'); }
 
   // Aumentado
-  if (baseName.includes('aug') || baseName.includes('#5')) tags.push('Aumentado');
+  const isAugmented = /aug|\+|#5/i.test(baseName);
+  if (isAugmented) tags.push('Aumentado');
 
   // Suspendido
   if (baseName.includes('sus')) tags.push('Suspendido');
@@ -189,8 +190,11 @@ export const generateChordTags = (
 
   // Mayor vs Menor (Evaluación de cualidad principal)
   if (baseName.includes('m') && !baseName.includes('maj') && !baseName.includes('dim')) tags.push('Menor');
-  else if (!baseName.includes('m') || baseName.includes('maj')) 
-    if (!tags.includes('Power Chord') && !tags.includes('Suspendido') && !tags.includes('Disminuido') && !tags.includes('Aumentadod')) tags.push('Mayor'); 
+  else if (!tags.includes('Power Chord')
+    && !tags.includes('Suspendido')
+    && !tags.includes('Disminuido')
+    && !tags.includes('Semi-disminuido')
+    && !isAugmented) tags.push('Mayor');
 
   // Drop Voicings
   const dropVoicing = getDropVoicing(figura);
@@ -200,4 +204,3 @@ export const generateChordTags = (
 
   return [...new Set(tags)];
 };
-

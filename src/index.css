@@ -124,9 +124,16 @@ html[data-theme="night"] .fretboard-vertical-row.fretboard-vertical-nut {
     #f3f7fb;
 }
 
+html[data-theme="night"] .finder-page {
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(14, 116, 144, 0.14), transparent 38rem),
+    #0b111a;
+}
+
+
 .finder-layout {
   display: grid;
-  grid-template-columns: minmax(0, 30%) minmax(0, 70%);
+  grid-template-columns: minmax(0, 25%) minmax(0, 75%);
   min-height: calc(100vh - 88px);
 }
 
@@ -134,7 +141,9 @@ html[data-theme="night"] .fretboard-vertical-row.fretboard-vertical-nut {
   box-sizing: border-box;
   min-width: 0;
   overflow-x: auto;
-  padding: 24px;
+  padding-left: 48px;
+  padding-top:24px;
+
 }
 
 .finder-fretboard {
@@ -142,11 +151,22 @@ html[data-theme="night"] .fretboard-vertical-row.fretboard-vertical-nut {
   height: clamp(420px, 81.9vh, 714px);
 }
 
-html[data-theme="night"] .finder-page {
+.finder-table {
+  min-width: 0;
+  margin-top:24px;
+  margin-left: 6px;
+  margin-right: 48px;
+  margin-bottom: 36px;
+  border-radius: 12px;
+  background-color: rgb(246, 85, 5);
+}
+
+html[data-theme="night"] .finder-table {
   background:
-    radial-gradient(ellipse at 15% 0%, rgba(14, 116, 144, 0.14), transparent 38rem),
+    radial-gradient(ellipse at 15% 0%, rgba(201, 242, 253, 0.579), transparent 38rem),
     #0b111a;
 }
+
 
 @media (max-width: 640px) {
   .finder-layout {

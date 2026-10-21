@@ -36,7 +36,10 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
             />
           </div>
         </div>
-        <div className="finder-empty-space" aria-hidden="true" />
+        <div className="finder-table">
+          {/* Tabla de acordes que coinciden con la selección */}
+          
+        </div>
       </div>
     </section>
   );

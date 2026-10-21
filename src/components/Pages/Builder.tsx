@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Pencil, Play, Save, Settings, Trash2} from 'lucide-react';
+import { CheckCircle2, Pencil, Play, Save, Settings} from 'lucide-react';
 import { playChordSound } from '../utils/SoundLogic';
 import { CHROMATIC_FLATS, CHROMATIC_SHARPS } from '../Config';
 import { saveChord, generateChordTags, saveCustomChordName } from '../Database';

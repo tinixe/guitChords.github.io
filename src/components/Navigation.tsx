@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { Guitar, Menu, X } from 'lucide-react';
 
 // (D)rop (Voicings), (A)ll (C)hords
-export type TabType = 'builder' | 'trainer' | 'harmonic-path' | 'library';
+export type TabType = 'builder' | 'trainer' | 'harmonic-path' | 'library' | 'finder';
 
 interface NavigationProps {
   activeTab: TabType;
@@ -17,6 +17,7 @@ export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => 
     { id: 'trainer', label: 'Trainer' },
     { id: 'harmonic-path', label: 'Harmonic Path' },
     { id: 'library', label: 'Chord Library' },
+    { id: 'finder', label: 'Finder' },
   ];
 
   return (

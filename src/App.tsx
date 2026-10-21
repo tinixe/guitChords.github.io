@@ -10,6 +10,7 @@ import { HarmonicPath } from './components/Pages/HarmonicPath';
 import type { ExerciseMode } from './components/Config';
 import { CircleHelp, Moon, Sun } from 'lucide-react';
 import { ChordLibrary } from './components/Pages/ChordLibrary';
+import { Finder } from './components/Pages/Finder';
 // Persistencia
 const NAVIGATION_STORAGE_KEY = 'active_tab_v1';
 const THEME_STORAGE_KEY = 'color_theme_v1';
@@ -32,7 +33,7 @@ export const App = () => {
   const [activeTab, setActiveTab] = useState<TabType>(() => {
     try {
       const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
-      return saved === 'trainer' || saved === 'harmonic-path' || saved === 'library'
+      return saved === 'trainer' || saved === 'harmonic-path' || saved === 'library' || saved === 'finder'
         ? saved
         : 'builder';
     } catch { return 'builder'; }
@@ -98,6 +99,7 @@ export const App = () => {
         {activeTab === 'trainer' && <Trainer accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} strumSpeed={strumSpeed} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
         {activeTab === 'harmonic-path' && <HarmonicPath accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
         {activeTab === 'library' && <ChordLibrary accidentals={accidentals}/>}
+        {activeTab === 'finder' && <Finder accidentals={accidentals} />}
       </main>
 
       <MenuSettings

@@ -11,14 +11,7 @@ export interface FretboardProps {
   rootIndex?: number;               // Índice de la tónica (0-11) para pintarla en dorado/ámbar
   colorful?: boolean;               // Coloreamos la primera y la tercera para que destaquen más
   totalFrets?: number;              // Total de trastes a renderizar (por defecto 17)
-  highlightedNotes?: number[];      // Clases de altura que se muestran en todas sus posiciones
-  showMutedMarkers?: boolean;
-  activePosition?: { stringIndex: number; fretNumber: number } | null;
-  dimmedHighlights?: boolean;
-  noteNamesByPitchClass?: (string | undefined)[];
-  chordTonePitchClasses?: number[];
-  chordGripPositions?: { stringIndex: number; fretNumber: number }[];
-  routePositions?: { stringIndex: number; fretNumber: number }[];
+  orientation?: 'horizontal' | 'vertical';
 }
 
 // Calcula el ancho del traste en función de su posición física
@@ -36,14 +29,7 @@ export const Fretboard: React.FC<FretboardProps> = ({
   rootIndex,
   colorful,
   totalFrets = 17,
-  highlightedNotes,
-  showMutedMarkers = true,
-  activePosition,
-  dimmedHighlights = false,
-  noteNamesByPitchClass,
-  chordTonePitchClasses,
-  chordGripPositions,
-  routePositions,
+  orientation = 'horizontal',
 }) => {
   // Estado para la previsualización del ratón (stringIdx y fretNum)
   const [hoveredPosition, setHoveredPosition] = useState<{
@@ -55,6 +41,94 @@ export const Fretboard: React.FC<FretboardProps> = ({
     if (readOnly || !onFretClick) return;
     onFretClick(stringIndex, fretNumber);
   };
+
+  const renderFretCell = (stringIndex: number, fretNum: number) => {
+    const activeFret = selectedFrets[stringIndex];
+    const isSelected = activeFret === fretNum;
+    const noteIndex = getNoteIndex(stringIndex, fretNum);
+    const isMuted = activeFret === 'x' && fretNum === 0;
+    const isHovered =
+      !readOnly &&
+      hoveredPosition?.stringIdx === stringIndex &&
+      hoveredPosition?.fretNum === fretNum &&
+      !isSelected;
+    const noteLabel = getNoteName(stringIndex, fretNum, accidentals);
+    return (
+      <div
+        key={`${stringIndex}-${fretNum}`}
+        onClick={() => handleCellClick(stringIndex, fretNum)}
+        onMouseEnter={() => !readOnly && setHoveredPosition({ stringIdx: stringIndex, fretNum })}
+        onMouseLeave={() => !readOnly && setHoveredPosition(null)}
+        style={orientation === 'horizontal'
+          ? { width: `${getFretWidthPercent(fretNum)}%` }
+          : undefined}
+        className={`flex items-center justify-center z-10 relative ${
+          orientation === 'horizontal' ? 'h-8' : 'h-full flex-1'
+        } ${readOnly ? 'cursor-default' : 'cursor-pointer'}`}
+      >
+        {isSelected && (
+          <div
+            className={`w-7 h-7 rounded-full font-mono text-xs md:text-sm font-bold flex items-center justify-center shadow-md scale-105 transition-all ${
+              getNoteColorClass(noteIndex, rootIndex ?? -1, colorful)
+            }`}
+          >
+            {noteLabel}
+          </div>
+        )}
+        {isHovered && (
+          <div className="w-7 h-7 rounded-full bg-blue-600/40 text-white font-mono text-xs md:text-sm font-bold flex items-center justify-center shadow-xs pointer-events-none animate-in fade-in duration-100">
+            {noteLabel}
+          </div>
+        )}
+        {isMuted && !isHovered && (
+          <div className="w-7 h-7 rounded-full border-2 border-rose-600 bg-white text-rose-600 font-mono text-xs md:text-sm font-extrabold flex items-center justify-center shadow-xs">
+            X
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  if (orientation === 'vertical') {
+    return (
+      <div className={`fretboard-vertical w-fit p-3 bg-zinc-100 rounded-xl shadow-inner ${readOnly ? 'select-none' : ''}`}>
+        <div className="fretboard-vertical-labels" aria-hidden="true">
+          <span />
+          {BASE_NOTES.map((stringNote, stringIdx) => (
+            <span key={stringIdx}>{stringNote}</span>
+          ))}
+        </div>
+        <div className="fretboard-vertical-rows">
+          <div className="fretboard-vertical-strings" aria-hidden="true">
+            {BASE_NOTES.map((_, stringIdx) => {
+              const halfThickness = (1 + (5 - stringIdx) * 0.55) * 0.6;
+              return (
+                <span
+                  className="fretboard-vertical-string"
+                  key={stringIdx}
+                  style={{
+                    background: `linear-gradient(90deg, transparent calc(50% - ${halfThickness}px), #d4d4d8 calc(50% - ${halfThickness}px), #71717a 50%, #d4d4d8 calc(50% + ${halfThickness}px), transparent calc(50% + ${halfThickness}px))`,
+                  }}
+                />
+              );
+            })}
+          </div>
+          {Array.from({ length: totalFrets + 1 }, (_, fretNum) => (
+            <div
+              className={`fretboard-vertical-row${fretNum === 0 ? ' fretboard-vertical-nut' : ''}${fretNum === 12 ? ' fretboard-vertical-octave' : ''}`}
+              key={fretNum}
+              style={{ flex: `${getFretWidthPercent(fretNum)} 0 0%` }}
+            >
+              <span className="fretboard-vertical-number">{fretNum}</span>
+              {BASE_NOTES.map((_, stringIdx) =>
+                renderFretCell(stringIdx, fretNum)
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`w-full p-6 bg-zinc-100 rounded-xl shadow-inner overflow-x-auto ${readOnly ? 'select-none' : ''}`}>
@@ -80,8 +154,6 @@ export const Fretboard: React.FC<FretboardProps> = ({
         {/* Cuerdas e interacción (6ª cuerda abajo, 1ª cuerda arriba) */}
         <div className="flex flex-col-reverse">
           {BASE_NOTES.map((stringNote, stringIdx) => {
-            const activeFret = selectedFrets[stringIdx];
-
             return (
               <div key={stringIdx} className="relative flex items-center h-8">
                 
@@ -106,71 +178,9 @@ export const Fretboard: React.FC<FretboardProps> = ({
                   />
 
                   {/* Trastes navegables */}
-                  {Array.from({ length: totalFrets + 1 }).map((_, fretNum) => {
-                    const isSelected = activeFret === fretNum;
-                    const noteIndex = getNoteIndex(stringIdx, fretNum);
-                    const isHighlighted = highlightedNotes?.includes(noteIndex) ?? false;
-                    const isChordTone = chordTonePitchClasses?.includes(noteIndex) ?? false;
-                    const isChordGripPosition = chordGripPositions?.some(position =>
-                      position.stringIndex === stringIdx && position.fretNumber === fretNum
-                    ) ?? false;
-                    const isRoutePosition = routePositions?.some(position =>
-                      position.stringIndex === stringIdx && position.fretNumber === fretNum
-                    ) ?? false;
-                    const isActivePosition = activePosition?.stringIndex === stringIdx
-                      && activePosition.fretNumber === fretNum;
-                    const isMuted = showMutedMarkers && activeFret === 'x' && fretNum === 0;
-
-                    // Hover funcional (Inhabilitado si es readOnly o ya está activo)
-                    const isHovered =
-                      !readOnly &&
-                      hoveredPosition?.stringIdx === stringIdx &&
-                      hoveredPosition?.fretNum === fretNum &&
-                      !isSelected;
-
-                    // Obtención dinámica del nombre de la nota
-                    const noteLabel = noteNamesByPitchClass?.[noteIndex] ?? getNoteName(stringIdx, fretNum, accidentals);
-                    if (rootIndex === undefined) rootIndex = -1;
-
-                    return (
-                      <div
-                        key={fretNum}
-                        onClick={() => handleCellClick(stringIdx, fretNum)}
-                        onMouseEnter={() => !readOnly && setHoveredPosition({ stringIdx, fretNum })}
-                        onMouseLeave={() => !readOnly && setHoveredPosition(null)}
-                        style={{ width: `${getFretWidthPercent(fretNum)}%` }}
-                        className={`h-8 flex items-center justify-center z-10 relative ${
-                          readOnly ? 'cursor-default' : 'cursor-pointer'
-                        }`}
-                      >
-                        {/* 1. NOTA SELECCIONADA */}
-                        {(isSelected || isHighlighted || isActivePosition || isChordGripPosition) && (
-                          <div
-                            className={`w-7 h-7 rounded-full font-mono text-xs md:text-sm font-bold flex items-center justify-center shadow-md ${isActivePosition ? 'scale-[1.16] ring-2 ring-yellow-400 opacity-100 saturate-100' : `scale-105 transition-all ${dimmedHighlights && isHighlighted && !isRoutePosition ? 'opacity-40 saturate-50' : ''} ${isChordTone ? 'ring-1 ring-amber-400' : ''} ${isChordGripPosition ? 'border-2 border-white' : ''}`} ${
-                              getNoteColorClass(getNoteIndex(stringIdx, fretNum), rootIndex, colorful)
-                            }`
-                          }
-                          >
-                            {noteLabel}
-                          </div>
-                        )}
-
-                        {/* 2. NOTA EN PREVIEW (HOVER) */}
-                        {isHovered && (
-                          <div className="w-7 h-7 rounded-full bg-blue-600/40 text-white font-mono text-xs md:text-sm font-bold flex items-center justify-center shadow-xs pointer-events-none animate-in fade-in duration-100">
-                            {noteLabel}
-                          </div>
-                        )}
-
-                        {/* 3. CUERDA SILENCIADA ('X') */}
-                        {isMuted && !isHovered && (
-                          <div className="w-7 h-7 rounded-full border-2 border-rose-600 bg-white text-rose-600 font-mono text-xs md:text-sm font-extrabold flex items-center justify-center shadow-xs">
-                            X
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                  {Array.from({ length: totalFrets + 1 }, (_, fretNum) =>
+                    renderFretCell(stringIdx, fretNum)
+                  )}
                 </div>
               </div>
             );

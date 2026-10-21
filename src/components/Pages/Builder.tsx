@@ -207,13 +207,6 @@ export const Builder: React.FC<BuilderProps> = ({
     }, totalDurationMs);
   };
 
-  // Resetea el diapasón
-  const handleResetBuilder = () => {
-    setSelectedFrets(['x', 'x', 'x', 'x', 'x', 'x']);
-    setCustomChord(null);
-    localStorage.removeItem(BUILDER_STORAGE_KEY);
-  };
-
   return (
         <div className="relative min-h-screen overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-white text-black flex flex-col items-center p-8 font-sans pt-0">
           <div className="app-fretboard-layout w-full max-w-5xl flex flex-col items-center gap-8">

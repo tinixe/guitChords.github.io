@@ -15,9 +15,10 @@ export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => 
   const tabs: { id: TabType; label: string }[] = [
     { id: 'builder', label: 'Builder' },
     { id: 'trainer', label: 'Trainer' },
+    { id: 'finder', label: 'Finder' },
     { id: 'harmonic-path', label: 'Harmonic Path' },
     { id: 'library', label: 'Chord Library' },
-    { id: 'finder', label: 'Finder' },
+
   ];
 
   return (

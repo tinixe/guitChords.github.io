@@ -97,9 +97,10 @@ export const App = () => {
       <main className="app-main h-full">
         {activeTab === 'builder' && <Builder accidentals={accidentals} colorful={colorful} onOpenSettings={() => setIsSettingsOpen(true)} strumSpeed={strumSpeed} />}
         {activeTab === 'trainer' && <Trainer accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} strumSpeed={strumSpeed} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
+        {activeTab === 'finder' && <Finder accidentals={accidentals} />}
         {activeTab === 'harmonic-path' && <HarmonicPath accidentals={accidentals} colorful={colorful} exerciseMode={exerciseMode} tempoBpm={tempoBpm} onOpenSettings={() => setIsSettingsOpen(true)} />}
         {activeTab === 'library' && <ChordLibrary accidentals={accidentals}/>}
-        {activeTab === 'finder' && <Finder accidentals={accidentals} />}
+
       </main>
 
       <MenuSettings

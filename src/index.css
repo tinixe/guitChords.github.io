@@ -132,6 +132,7 @@ html[data-theme="night"] .finder-page {
 
 
 .finder-layout {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 25%) minmax(0, 75%);
   min-height: calc(100vh - 88px);
@@ -151,14 +152,162 @@ html[data-theme="night"] .finder-page {
   height: clamp(420px, 81.9vh, 714px);
 }
 
+.finder-string-buttons {
+  position: absolute;
+  top: 0px;
+  left: 60px;
+  z-index: 1;
+  display: grid;
+  height: 1rem;
+  grid-template-columns: 1.575rem repeat(6, 2.1rem);
+  justify-items: center;
+  align-items: center;
+}
+
+.finder-string-button {
+  width: 0.8rem;
+  height: 0.8rem;
+  padding: 0;
+  border: 2px solid #64748b;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.finder-string-button.is-active {
+  border-color: #0284c7;
+  background-color: #0284c7;
+}
+
+.finder-string-button:hover {
+  transform: scale(1.15);
+}
+
+.finder-string-button:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 3px;
+}
+
 .finder-table {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  max-height: calc(100vh - 160px);
+  overflow: auto;
   margin-top:24px;
   margin-left: 6px;
   margin-right: 48px;
   margin-bottom: 36px;
+  padding: 1rem;
   border-radius: 12px;
-  background-color: rgb(246, 85, 5);
+  background-color: rgb(233, 233, 233);
+}
+
+.finder-table-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.finder-table .finder-table-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.finder-type-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.finder-type-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #334155;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.finder-type-color {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid rgb(15 23 42 / 15%);
+  border-radius: 0.2rem;
+}
+
+.finder-type-color--major {
+  background-color: #ffb700;
+}
+
+.finder-type-color--minor {
+  background-color: #2196F3;
+}
+
+.finder-type-color--suspended {
+  background-color: #37e6d5;
+}
+
+.finder-type-color--diminished {
+  background-color: #6e1818;
+}
+
+.finder-type-color--augmented {
+  background-color: #9568e2;
+}
+
+.finder-results-grid {
+  display: grid;
+  width: max-content;
+  min-width: 100%;
+  flex: 1 0 auto;
+  grid-template-columns: repeat(4, minmax(12rem, max-content));
+  align-items: start;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.finder-result-column {
+  min-width: 0;
+  padding: 0.75rem;
+  border-right: 1px solid #cbd5e1;
+}
+
+.finder-result-column:last-of-type {
+  border-right: 0;
+}
+
+.finder-result-column h3 {
+  margin: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.finder-results-empty {
+  display: flex;
+  grid-column: 1 / -1;
+  min-height: 12rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 1rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 html[data-theme="night"] .finder-table {
@@ -167,6 +316,20 @@ html[data-theme="night"] .finder-table {
     #0b111a;
 }
 
+html[data-theme="night"] .finder-type-legend-item,
+html[data-theme="night"] .finder-result-column h3 {
+  color: #e2e8f0;
+}
+
+html[data-theme="night"] .finder-results-grid,
+html[data-theme="night"] .finder-result-column,
+html[data-theme="night"] .finder-result-column h3 {
+  border-color: #304055;
+}
+
+html[data-theme="night"] .finder-results-empty {
+  color: #a8b6c8;
+}
 
 @media (max-width: 640px) {
   .finder-layout {
@@ -175,6 +338,10 @@ html[data-theme="night"] .finder-table {
 
   .fretboard-vertical-labels,
   .fretboard-vertical-row {
+    grid-template-columns: 1.05rem repeat(6, 2.1rem);
+  }
+
+  .finder-string-buttons {
     grid-template-columns: 1.05rem repeat(6, 2.1rem);
   }
 

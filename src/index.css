@@ -297,6 +297,43 @@ html[data-theme="night"] .finder-page {
   text-align: center;
 }
 
+.finder-result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.finder-chord-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid rgb(15 23 42 / 15%);
+  border-radius: 0.5rem;
+}
+
+.finder-chord-card--major {
+  background-color: #ffb700;
+}
+
+.finder-chord-card--minor {
+  background-color: #2196f3;
+}
+
+.finder-chord-card--suspended {
+  background-color: #37e6d5;
+}
+
+.finder-chord-card--diminished {
+  background-color: #6e1818;
+  color: white;
+}
+
+.finder-chord-card--augmented {
+  background-color: #9568e2;
+}
+
 .finder-results-empty {
   display: flex;
   grid-column: 1 / -1;

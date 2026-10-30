@@ -158,7 +158,7 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
 
         if (!cancelled) {
           setFinderError(null);
-          setResults(groupedResults);
+            setResults(groupedResults);
           setIsLoading(false);
         }
       } catch (error) {

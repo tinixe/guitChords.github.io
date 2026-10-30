@@ -270,7 +270,7 @@ html[data-theme="night"] .finder-page {
   width: max-content;
   min-width: 100%;
   flex: 1 0 auto;
-  grid-template-columns: repeat(4, minmax(12rem, max-content));
+  grid-template-columns: repeat(4, minmax(12rem, 1fr));
   align-items: start;
   border: 1px solid #cbd5e1;
   border-radius: 0.5rem;

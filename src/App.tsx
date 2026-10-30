@@ -15,6 +15,15 @@ import { Finder } from './components/Pages/Finder';
 const NAVIGATION_STORAGE_KEY = 'active_tab_v1';
 const THEME_STORAGE_KEY = 'color_theme_v1';
 
+/**
+ * Coordina el estado global de la aplicación y presenta la página seleccionada,
+ * la navegación, los controles de tema y el panel compartido de ajustes.
+ *
+ * @precondition El componente se renderiza en un navegador con React y el
+ * elemento raíz de la aplicación está montado.
+ * @postcondition Presenta una única página activa y mantiene sincronizados
+ * navegación y tema con localStorage cuando este está disponible.
+ */
 export const App = () => {
   const [accidentals, setAccidentals] = useState<AccidentalsPreference>('sharps');
   const [colorful, setColorful] = useState<boolean>(true);
@@ -52,6 +61,16 @@ export const App = () => {
     }
   }, [theme]);
 
+  /**
+   * Alterna el tema global y aplica el atributo del documento para que CSS
+   * active los estilos diurnos o nocturnos. Dos frames permiten que la
+   * transición visual se aplique después del cambio de tema.
+   *
+   * @precondition Se ejecuta en respuesta a una acción del usuario dentro del
+   * navegador.
+   * @postcondition El estado React y `document.documentElement.dataset.theme`
+   * contienen el tema opuesto al anterior.
+   */
   const handleThemeToggle = () => {
     const nextTheme = theme === 'day' ? 'night' : 'day';
     const root = document.documentElement;

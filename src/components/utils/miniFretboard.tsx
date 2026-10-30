@@ -6,6 +6,12 @@ interface MiniFretboardProps {
   figura: (number | 'x')[];
 }
 
+/**
+ * Renderiza una vista compacta de la figura: calcula el rango visible a partir
+ * de los trastes pisados y marca las notas tónicas en relación con `rootIndex`.
+ * @precondition `figura` contiene una entrada por cuerda en el orden esperado y `rootIndex` es un índice cromático.
+ * @postcondition Devuelve el diapasón compacto sin modificar la figura ni el estado de la aplicación.
+ */
 export const MiniFretboard: React.FC<MiniFretboardProps> = ({ rootIndex, figura }) => {
   // Extraemos únicamente los trastes pisados (> 0) para calcular el rango activo
   const fretsPushed = figura.filter((f): f is number => typeof f === 'number' && f > 0);

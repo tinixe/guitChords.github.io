@@ -41,6 +41,12 @@ export const DROP_MASKS: Record<string, number[][]> = {
 };
 
 // Helper para aplicar las máscaras de Drop Voicings 
+/**
+ * Clasifica una figura de seis cuerdas como tríada o como Drop Voicing según
+ * sus cuerdas silenciadas; devuelve una cadena vacía cuando no coincide.
+ * @precondition `figura` representa seis cuerdas y cada elemento es un traste numérico o `'x'`.
+ * @postcondition Devuelve `'Triada'`, el tipo Drop coincidente o `''`, sin modificar `figura`.
+ */
 export const getDropVoicing = (figura: (number | 'x')[]) : string => {
 
   // Si hay exactamente 3 notas en 3 cuerdas, es una tríada (puede ser mayor, menor, dim, aug, sus)
@@ -62,6 +68,12 @@ export const getDropVoicing = (figura: (number | 'x')[]) : string => {
 };
 
 // Helper para guardar acordes en la IndexedDB
+/**
+ * Inserta o reemplaza un acorde global, conservando el estado de favorito que
+ * ya tuviera el registro y normalizando los espacios de la extensión.
+ * @precondition `chordId` identifica el acorde y `figura`/`tags` contienen sus datos serializables.
+ * @postcondition La tabla `globalChords` contiene el acorde actualizado; propaga los errores de IndexedDB.
+ */
 export const saveChord = async (chordId: string, rootIndex: number, bassIndex: number, extension: string, figura:(number | 'x')[], tags: string[]) => {
   const existingChord = await db.globalChords.get(chordId);
 
@@ -77,6 +89,11 @@ export const saveChord = async (chordId: string, rootIndex: number, bassIndex: n
       });
   }
 
+/**
+ * Actualiza el indicador de favorito del acorde identificado.
+ * @precondition `chordId` es una clave de acorde y `isFavorite` es el estado deseado.
+ * @postcondition IndexedDB aplica el cambio si existe el registro; propaga los errores de escritura.
+ */
 export const setChordFavorite = async (chordId: string, isFavorite: boolean) => {
   await db.globalChords.update(chordId, { isFavorite });
 };
@@ -85,6 +102,12 @@ export class FlashChordsDB extends Dexie {
   globalChords!: Table<GlobalChord>;
   customChords!: Table<CustomChord, (number|'x')[]>;
 
+  /**
+   * Inicializa la base de datos FlashChordsDB y declara las tablas e índices
+   * usados para acordes globales y personalizados.
+   * @precondition Dexie está disponible en el entorno de ejecución.
+   * @postcondition La instancia queda asociada al esquema de versión 2; no abre la base hasta que Dexie lo requiera.
+   */
   constructor() {
     super('FlashChordsDB');
     
@@ -104,6 +127,12 @@ export const db = new FlashChordsDB();
 
 // --- FUNCIONES AUXILIARES ---
 
+/**
+ * Lee todos los acordes globales y adapta `figura` a la propiedad `frets`
+ * que consumen los componentes de la aplicación.
+ * @precondition La tabla `globalChords` está disponible en IndexedDB.
+ * @postcondition Resuelve con los registros normalizados y un booleano de favorito definido; no altera los registros almacenados.
+ */
 export const getAllChords = async () => {
   const chords = await db.globalChords.toArray();
   return chords.map((chord) => ({
@@ -117,11 +146,22 @@ export const getAllChords = async () => {
   }));
 };
 
+/**
+ * Busca el nombre personalizado asociado a una figura exacta.
+ * @precondition `frets` usa el mismo orden y formato de trastes que las claves guardadas.
+ * @postcondition Resuelve con el nombre encontrado o `null` si no existe; no modifica la tabla.
+ */
 export const getCustomChordName = async (frets: (number | 'x')[]): Promise<string | null> => {
   const customChord = await db.customChords.get(frets);
   return customChord?.name ?? null;
 };
 
+/**
+ * Guarda o reemplaza el nombre personalizado de una figura, recortando los
+ * espacios externos del nombre.
+ * @precondition `frets` identifica una figura válida y `name` es una cadena.
+ * @postcondition IndexedDB almacena el nombre normalizado para esa figura; propaga los errores de escritura.
+ */
 export const saveCustomChordName = async (name: string, frets: (number | 'x')[]) => {
   await db.customChords.put({
     name: name.trim(),
@@ -129,10 +169,21 @@ export const saveCustomChordName = async (name: string, frets: (number | 'x')[])
   });
 };
 
+/**
+ * Elimina de IndexedDB el nombre personalizado asociado a una figura.
+ * @precondition `frets` coincide con el formato usado como clave de la tabla.
+ * @postcondition El registro con esa clave deja de estar disponible; propaga los errores de IndexedDB.
+ */
 export const deleteCustomChordName = async (frets: (number | 'x')[]) => {
   await db.customChords.delete(frets);
 };
 
+/**
+ * Genera etiquetas para búsqueda a partir del nombre, la tónica y la figura:
+ * identifica cualidad, extensiones, cuerdas al aire, voicing y nombres personalizados.
+ * @precondition `root` y `chordName` representan el acorde y `figura` contiene sus trastes.
+ * @postcondition Devuelve etiquetas únicas, sin modificar la figura; si hay `customName` no vacío, lo usa como nombre a clasificar.
+ */
 export const generateChordTags = (
   root: string,
   chordName: string, 

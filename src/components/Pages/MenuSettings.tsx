@@ -19,6 +19,11 @@ interface SettingsBuilderProps {
   setTempoBpm: (bpm: number) => void;
 }
 
+/**
+ * Renderiza el panel de ajustes globales y comunica los cambios mediante los callbacks recibidos.
+ * @precondition Los valores y callbacks de las preferencias deben respetar `SettingsBuilderProps`.
+ * @postcondition Devuelve `null` si está cerrado; si está abierto, presenta controles para todas las preferencias.
+ */
 export const MenuSettings: React.FC<SettingsBuilderProps> = ({
   isOpen,
   onClose,

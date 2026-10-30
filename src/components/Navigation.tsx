@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { Guitar, Menu, X } from 'lucide-react';
 
 // (D)rop (Voicings), (A)ll (C)hords
@@ -10,6 +10,12 @@ interface NavigationProps {
   setActiveTab: (tab: TabType) => void;
 }
 
+/**
+ * Renderiza la barra de navegación y el menú desplegable de secciones.
+ * Mantiene localmente si el menú está abierto y comunica la selección al componente padre.
+ * @precondition `activeTab` corresponde a una pestaña válida y `setActiveTab` acepta un `TabType`.
+ * @postcondition Devuelve la navegación correspondiente al estado actual; al seleccionar una pestaña la comunica y cierra el menú.
+ */
 export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const tabs: { id: TabType; label: string }[] = [
@@ -21,6 +27,25 @@ export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => 
 
   ];
 
+  /**
+   * Invierte el estado de apertura del menú conservando la actualización funcional
+   * para evitar depender de un valor capturado por un render anterior.
+   * @precondition React mantiene activo el estado local de este componente.
+   * @postcondition El menú queda abierto si estaba cerrado y cerrado si estaba abierto.
+   */
+  const handleMenuToggle = () => setIsOpen((open) => !open);
+
+  /**
+   * Activa la pestaña elegida y cierra el menú de navegación.
+   * @precondition El botón actual contiene en `data-tab` un identificador válido de `TabType`.
+   * @postcondition Invoca `setActiveTab` con ese identificador y deja `isOpen` en `false`.
+   */
+  const handleTabSelection = (event: MouseEvent<HTMLButtonElement>) => {
+    const tab = event.currentTarget.dataset.tab as TabType;
+    setActiveTab(tab);
+    setIsOpen(false);
+  };
+
   return (
     <header className="fixed inset-x-0 top-0 z-40 h-[68px] border-b border-white/[0.08] bg-[#090d14]/95 text-white shadow-[0_8px_28px_rgba(5,10,20,0.16)] backdrop-blur-xl">
       <div className="relative mx-auto flex h-full max-w-[1440px] items-center px-4 sm:px-6">
@@ -29,7 +54,7 @@ export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => 
           aria-label={isOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
           aria-expanded={isOpen}
           aria-controls="navigation-menu"
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={handleMenuToggle}
           className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition-colors hover:border-sky-400/40 hover:bg-sky-400/10 hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
         >
           {isOpen ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}
@@ -55,10 +80,8 @@ export const Navigation: FC<NavigationProps> = ({ activeTab, setActiveTab }) => 
                   key={tab.id}
                   type="button"
                   aria-current={isActive ? 'page' : undefined}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setIsOpen(false);
-                  }}
+                  data-tab={tab.id}
+                  onClick={handleTabSelection}
                   className={`block w-full rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-sky-400/10 font-semibold text-sky-300'

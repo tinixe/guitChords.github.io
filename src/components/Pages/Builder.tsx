@@ -25,6 +25,11 @@ interface BuilderProps {
   strumSpeed: number;
 }
 
+/**
+ * Construye y presenta un acorde editable, calcula su nombre y permite reproducirlo o guardarlo.
+ * @precondition Las preferencias y callbacks recibidos deben respetar los tipos de `BuilderProps`.
+ * @postcondition Renderiza el diapasón y las acciones; mantiene el estado del acorde sincronizado con localStorage.
+ */
 export const Builder: React.FC<BuilderProps> = ({
   accidentals,
   onSave,
@@ -34,6 +39,11 @@ export const Builder: React.FC<BuilderProps> = ({
 }) => {
 
   // Carga inicial desde localStorage con fallback a valores por defecto
+  /**
+   * Recupera el estado persistido del constructor y usa valores vacíos si no existe o no puede leerse.
+   * @precondition `localStorage` puede no estar disponible o contener datos inválidos.
+   * @postcondition Devuelve un estado con forma `BuilderPersistedState`, ya sea recuperado o predeterminado.
+   */
   const getInitialBuilderState = (): BuilderPersistedState => {
     try {
       const saved = localStorage.getItem(BUILDER_STORAGE_KEY);
@@ -135,6 +145,13 @@ export const Builder: React.FC<BuilderProps> = ({
   }, [selectedFrets]);
 
   // Gestiona la interacción con el diapasión
+  /**
+   * Alterna el traste seleccionado en una cuerda y actualiza la figura del acorde.
+   * @param stringIndex Índice de la cuerda que se ha pulsado.
+   * @param fret Traste que se alterna.
+   * @precondition `stringIndex` identifica una cuerda existente y `fret` es un traste válido.
+   * @postcondition La cuerda queda en `fret` o silenciada con `'x'`, y React recibe la figura actualizada.
+   */
   const handleFretClick = (stringIndex: number, fret: number) => {
     const updated = [...selectedFrets];
     // Si ya está seleccionado ese traste, silenciamos la cuerda ('x')
@@ -143,6 +160,11 @@ export const Builder: React.FC<BuilderProps> = ({
   };
 
   // Guarda el acorde en IndexedDB. Si el acorde no tiene cuerdas al aire, lo transpone por toda el mástil
+  /**
+   * Guarda el acorde y sus etiquetas; transpone figuras móviles y notifica al consumidor si corresponde.
+   * @precondition Debe haber un nombre de acorde calculado; una figura móvil debe contener al menos un traste numérico.
+   * @postcondition Si el guardado termina correctamente, persiste las variantes y notifica mediante `onSave` y el aviso visual.
+   */
   const handleSaveClick = async () => {
     if (!chordName) return
 
@@ -193,6 +215,11 @@ export const Builder: React.FC<BuilderProps> = ({
   };
 
   // Acciona el sonido del acorde
+  /**
+   * Reproduce el acorde actual y bloquea temporalmente la acción para evitar reproducciones simultáneas.
+   * @precondition La figura y las preferencias de sonido corresponden al estado actual del constructor.
+   * @postcondition Se solicita la reproducción y se rearma el control tras la duración estimada del rasgueo.
+   */
   const handlePlayClick = async () => {
     if (isPlayingSound) return;
     setIsPlayingSound(true);

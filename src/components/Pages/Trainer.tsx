@@ -16,6 +16,11 @@ const TRAINER_STORAGE_KEY = 'trainer_state_v1';
 const tabu: string[] = [];
 const penalty = new Map<string, number>();
 
+/**
+ * Vacía el historial de acordes y las penalizaciones compartidas por las sesiones de conducción de voces.
+ * @precondition Las estructuras de sesión del módulo están inicializadas.
+ * @postcondition `tabu` queda vacío y `penalty` no conserva entradas.
+ */
 export const resetVoiceLeadingSession = () => {
   tabu.length = 0;
   penalty.clear();
@@ -37,6 +42,11 @@ interface TrainerPersistedState{
 }
 
 
+/**
+ * Proporciona filtros de acordes y reproduce una secuencia recomendada con conducción de voces.
+ * @precondition Las preferencias, el tempo y los callbacks recibidos cumplen el contrato de `TrainerProps`.
+ * @postcondition Renderiza el diapasón, filtros y controles, sincronizando estado persistido y reproducción.
+ */
 export const Trainer: React.FC<TrainerProps> = ({
   accidentals,
   colorful,
@@ -47,6 +57,11 @@ export const Trainer: React.FC<TrainerProps> = ({
 }) => {
 
   // Carga inicial desde localStorage con fallback a valores por defecto
+  /**
+   * Recupera el diapasón y filtros guardados, validando la forma básica de cada propiedad persistida.
+   * @precondition localStorage puede no contener datos válidos o no estar disponible.
+   * @postcondition Devuelve un estado inicial con arrays válidos y valores predeterminados si falla la lectura.
+   */
   const getInitialTrainerState = (): TrainerPersistedState => {
     try {
       const saved = localStorage.getItem(TRAINER_STORAGE_KEY);
@@ -116,6 +131,11 @@ export const Trainer: React.FC<TrainerProps> = ({
   const currentRoot = SCALE.indexOf(currentChord.match(/^[A-G][#b]?/)?.[0] || 'C');
   
   // Opciones disponibles para "Cuerdas"
+  /**
+   * Deriva los grupos de cuerdas disponibles según los tipos de acorde seleccionados y elimina duplicados.
+   * @precondition `selectedChordType` contiene opciones reconocidas por el entrenador.
+   * @postcondition Devuelve la unión ordenada de grupos compatibles sin opciones repetidas.
+   */
   const getStringOptions = (): string[] => {
     return selectedChordType.flatMap(type => {
       switch (type) {
@@ -191,6 +211,11 @@ export const Trainer: React.FC<TrainerProps> = ({
   }, [activeDotIndex, isPlaying, matchingChords, accidentals, exerciseMode]);
 
   // Manejador del botón Play / Stop
+  /**
+   * Inicia la selección aleatoria ponderada de acordes o detiene la sesión en curso.
+   * @precondition Los filtros actuales y las alteraciones permiten consultar la base de acordes.
+   * @postcondition Al iniciar, carga coincidencias y reinicia el historial; si no hay resultados, mantiene la sesión detenida.
+   */
   const handleTogglePlay = async () => {
     if(!isPlaying)
     {
@@ -207,23 +232,53 @@ export const Trainer: React.FC<TrainerProps> = ({
   };
 
   // Manejadores de desplegables
+  /**
+   * Alterna un tipo de acorde y limpia el grupo de cuerdas, que depende de dicha selección.
+   * @param type Tipo de acorde seleccionado.
+   * @precondition `type` es una opción definida por `ChordTypeOption`.
+   * @postcondition El tipo queda activado o desactivado y el filtro de cuerdas queda vacío.
+   */
   const handleSelectChordType = (type: ChordTypeOption) => {
     setselectedChordType(prev => prev.includes(type) ? prev.filter(value => value !== type) : [...prev, type]);
     setSelectedStringGroup([]);
   };
 
+  /**
+   * Alterna una cualidad armónica en los filtros del entrenador.
+   * @param color Cualidad que se quiere incluir o excluir.
+   * @precondition `color` es una opción definida por `ChordColorOption`.
+   * @postcondition La cualidad queda incluida una sola vez o se elimina de la selección.
+   */
   const handleSelectColor = (color: ChordColorOption) => {
     setselectedColor(prev => prev.includes(color) ? prev.filter(value => value !== color) : [...prev, color]);
   };
 
+  /**
+   * Alterna una extensión entre las seleccionadas para el filtro de acordes.
+   * @param ext Extensión que se quiere incluir o excluir.
+   * @precondition `ext` es una extensión reconocida por el entrenador.
+   * @postcondition La extensión queda incluida una sola vez o se elimina de la selección.
+   */
   const handleSelectExtension = (ext: string) => {
     setSelectedExtension(prev => prev.includes(ext) ? prev.filter(value => value !== ext) : [...prev, ext]);
   };
 
+  /**
+   * Alterna una disposición de cuerdas compatible con los tipos de acorde seleccionados.
+   * @param strOption Disposición de cuerdas que se quiere incluir o excluir.
+   * @precondition `strOption` figura entre las opciones derivadas de `getStringOptions`.
+   * @postcondition La disposición queda incluida una sola vez o se elimina de la selección.
+   */
   const handleSelectStringGroup = (strOption: string) => {
     setSelectedStringGroup(prev => prev.includes(strOption) ? prev.filter(value => value !== strOption) : [...prev, strOption]);
   };
 
+  /**
+   * Abre el desplegable indicado o lo cierra si ya era el desplegable activo.
+   * @param menu Identificador de uno de los filtros desplegables.
+   * @precondition `menu` pertenece al conjunto de filtros admitidos por el entrenador.
+   * @postcondition El menú solicitado queda activo, o se desactiva si ya estaba abierto.
+   */
   const toggleDropdown = (menu: 'root' | 'chordtype' | 'color' |'extension' | 'strings') => {
     setActiveDropdown((prev) => (prev === menu ? null : menu));
   };

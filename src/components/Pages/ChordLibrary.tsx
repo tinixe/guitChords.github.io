@@ -13,9 +13,19 @@ interface ChordLibraryProps {
   accidentals?: 'sharps' | 'flats';
 }
 
+/**
+ * Muestra los acordes almacenados con búsqueda textual, filtros por etiquetas y paginación.
+ * @precondition `accidentals`, si se proporciona, debe ser `'sharps'` o `'flats'`.
+ * @postcondition Presenta los resultados vivos de IndexedDB y permite gestionar favoritos y acordes guardados.
+ */
 export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharps' }) => {
 
   // Inicializador para la Biblioteca
+  /**
+   * Carga desde localStorage los filtros anteriores y proporciona valores iniciales cuando falla la lectura.
+   * @precondition El almacenamiento puede estar vacío, ser ilegible o contener JSON inválido.
+   * @postcondition Devuelve una búsqueda vacía y etiquetas vacías por defecto, o el estado recuperado.
+   */
   const getInitialLibraryState = () => {
     try {
       const saved = localStorage.getItem(LIBRARY_STORAGE_KEY);
@@ -42,6 +52,12 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
 
 
   // Activar una etiqueta en la biblioteca
+  /**
+   * Activa o desactiva una categoría dentro de los filtros seleccionados.
+   * @param category Categoría que se alterna.
+   * @precondition `category` identifica una categoría válida de la biblioteca.
+   * @postcondition La categoría aparece una sola vez en la selección, o queda eliminada de ella.
+   */
   const toggleTag = (category: string) => {
     setSelectedTags(prev =>
       prev.includes(category)
@@ -88,6 +104,12 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
         const termExt = term.slice(termRoot.length, hasSlash ? slashIdx : term.length).toLowerCase(); 
 
         // Búsqueda de indices en ambas escalas
+        /**
+         * Busca el índice cromático de una nota usando primero sostenidos y después bemoles.
+         * @param note Nombre de nota que se quiere localizar.
+         * @precondition `note` usa la nomenclatura cromática configurada en la aplicación.
+         * @postcondition Devuelve su índice entre 0 y 11, o `-1` si está vacía o no existe.
+         */
         const findIndexInScales = (note: string) => {
           if (!note) return -1;
           const idxS = CHROMATIC_SHARPS.indexOf(note);
@@ -112,6 +134,13 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
   }, [searchTerm, selectedTags]);
 
   // Borrar un acorde desde la biblioteca
+  /**
+   * Evita que el clic se propague y elimina de IndexedDB el acorde y su nombre personalizado.
+   * @param e Evento de ratón del botón de borrado.
+   * @param chord Acorde que se desea eliminar.
+   * @precondition `chord` identifica un registro existente en la biblioteca.
+   * @postcondition Se intenta eliminar el registro y su nombre personalizado; los errores se registran en consola.
+   */
   const handleDeleteChord = async (
     e: React.MouseEvent,
     chord: GlobalChord
@@ -125,6 +154,13 @@ export const ChordLibrary: React.FC<ChordLibraryProps> = ({ accidentals = 'sharp
     catch (error) { console.error('Error al eliminar el acorde:', error); }
   };
 
+  /**
+   * Evita la propagación del clic e invierte el estado de favorito del acorde seleccionado.
+   * @param e Evento de ratón del botón de favorito.
+   * @param chord Acorde cuyo favorito se alterna.
+   * @precondition `chord` identifica un registro de la biblioteca.
+   * @postcondition Se solicita persistir el valor opuesto de `isFavorite`; los errores se registran en consola.
+   */
   const handleToggleFavorite = async (
     e: React.MouseEvent,
     chord: GlobalChord

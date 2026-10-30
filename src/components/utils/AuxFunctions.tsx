@@ -7,6 +7,12 @@ import { getAllChords } from "../Database";
 // --- FUNCIONES DE NOTAS --- //
 
 // Devuelve el nombre de una nota
+/**
+ * Obtiene el nombre de la nota que suena en una cuerda y traste usando la
+ * preferencia indicada para representar alteraciones.
+ * @precondition `stringIndex` identifica una cuerda de `BASE_NOTES`; `fret` es un traste no negativo o `'x'`.
+ * @postcondition Devuelve el nombre cromático elegido o `''` si la cuerda está silenciada o no tiene nota base válida.
+ */
 export const getNoteName = (stringIndex: number, fret: number | 'x', accidentals: 'sharps' | 'flats' = 'sharps'): string => {
     if (fret === 'x') return '';
   
@@ -18,6 +24,11 @@ export const getNoteName = (stringIndex: number, fret: number | 'x', accidentals
 } 
 
 // Devuelve el índice numérico cromático (0 = C, 1 = C#, ..., 11 = B) o null si es 'x'
+/**
+ * Calcula el índice cromático de una cuerda sumando el traste a su nota al aire.
+ * @precondition `stringIndex` identifica una cuerda definida en `BASE_NOTES` y `fret` es un traste no negativo o `'x'`.
+ * @postcondition Devuelve un valor de 0 a 11, o `-1` para una cuerda silenciada o una cuerda sin nota base reconocida.
+ */
 export const getNoteIndex = (stringIndex: number, fret: number | 'x'): number => {
   if (fret === 'x') return -1;
 
@@ -29,6 +40,11 @@ export const getNoteIndex = (stringIndex: number, fret: number | 'x'): number =>
 };
 
 // Devuelve la octava de una determinada nota
+/**
+ * Calcula la octava de la nota de una cuerda según su nota al aire y el número de semitonos del traste.
+ * @precondition `stringIndex` identifica una cuerda de `BASE_NOTES` y `fret` es un traste no negativo.
+ * @postcondition Devuelve la octava resultante; si la nota al aire no se reconoce, usa la octava 4.
+ */
 export const getNoteOctave = (stringIndex: number, fret: number): number => {
   const openNote = BASE_NOTES[stringIndex];
   const rootIndex = CHROMATIC_SHARPS.indexOf(openNote);
@@ -40,6 +56,12 @@ export const getNoteOctave = (stringIndex: number, fret: number): number => {
 };
 
 // Devuelve los índices de las notas activas (sin duplicados)
+/**
+ * Convierte una figura de trastes en sus índices cromáticos activos y elimina
+ * duplicados y cuerdas silenciadas.
+ * @precondition `selectedFrets` está ordenado por cuerda según `BASE_NOTES`.
+ * @postcondition Devuelve índices cromáticos únicos; cada `'x'` y cada cuerda sin nota válida queda excluida.
+ */
 export const getActiveNotes = (selectedFrets: (number | 'x')[]): number[] => {
   return [... new Set(selectedFrets
     .map((fret, stringIdx) => getNoteIndex(stringIdx, fret))
@@ -47,6 +69,12 @@ export const getActiveNotes = (selectedFrets: (number | 'x')[]): number[] => {
 }
 
 // Devuelve el color correspondiente a una nota según su función armónica
+/**
+ * Selecciona las clases CSS de una nota según su distancia cromática respecto
+ * de la tónica y, opcionalmente, resalta funciones armónicas.
+ * @precondition `noteIndex` y `rootIndex` son índices cromáticos, aunque `rootIndex` puede ser un valor centinela si no hay tónica.
+ * @postcondition Devuelve una cadena de clases CSS sin modificar los argumentos.
+ */
 export const getNoteColorClass = (
   noteIndex: number, 
   rootIndex: number,
@@ -84,6 +112,12 @@ export const getNoteColorClass = (
 };
 
 // Devuelve una nota en formato NotaOctava (A#4)
+/**
+ * Convierte cada traste de la figura a su número MIDI correspondiente y
+ * conserva `null` en las cuerdas silenciadas.
+ * @precondition `frets` está ordenado por cuerda y cada traste numérico no es negativo.
+ * @postcondition Devuelve una posición MIDI o `null` por cada cuerda, manteniendo el orden de entrada.
+ */
 const getMidiNotes = (frets: (number | 'x')[]) => frets.map((fret, stringIndex) => {
   if (fret === 'x') return null;
   return (getNoteOctave(stringIndex, fret) + 1) * 12 + getNoteIndex(stringIndex, fret);
@@ -99,6 +133,12 @@ interface RootCandidateProfile {
 }
 
 // Dada una serie de intervalos, construye la cadena con las extensiones correspondientes
+/**
+ * Analiza una colección de intervalos cromáticos y compone el sufijo del acorde,
+ * resolviendo cualidad, quinta, séptima y tensiones según las reglas armónicas del módulo.
+ * @precondition `input_intervals` contiene los intervalos cromáticos únicos de un acorde, incluidos 0 para su tónica.
+ * @postcondition Devuelve un sufijo de acorde; no modifica el array de entrada.
+ */
 const calculateChordName = (
   input_intervals: number[]
 ): string => {
@@ -136,6 +176,11 @@ const calculateChordName = (
   if (intervals.length === 1) return '';
 
   // Helper rápido para comparar arrays exactamente
+  /**
+   * Comprueba si dos listas de intervalos tienen los mismos elementos en el mismo orden.
+   * @precondition `a` y `b` son listas de números.
+   * @postcondition Devuelve `true` solo si ambas listas tienen igual longitud y valores en cada posición.
+   */
   const equals = (a: number[], b: number[]) => 
     a.length === b.length && a.every((val, idx) => val === b[idx]);
 
@@ -261,6 +306,12 @@ if (intervals.includes(9)) {
 }
 
 // Elige el nombre más probable entre varias opciones, basándose en penalizaciones por alteración
+/**
+ * Puntúa nombres alternativos de acorde para preferir las notaciones menos
+ * ambiguas y menos cargadas de excepciones.
+ * @precondition `candidates` contiene al menos un nombre de acorde.
+ * @postcondition Devuelve el nombre con menor penalización, conservando el orden en caso de empate.
+ */
 const selectChordName = (
   candidates: string[],
 ): string =>{
@@ -296,6 +347,12 @@ const selectChordName = (
 }
 
 // Calcula las distancias interválicas de cada nota (únicas) tomando a todas como posibles centros tonales.
+/**
+ * Trata cada índice de nota como posible tónica y construye su lista ordenada
+ * de intervalos cromáticos para generar perfiles candidatos.
+ * @precondition `uniqueIndices` contiene índices cromáticos únicos entre 0 y 11.
+ * @postcondition Devuelve un perfil por cada posible raíz, con intervalos ascendentes y su sufijo de acorde.
+ */
 const calculateIntervals = (
   uniqueIndices: number[],
 ): RootCandidateProfile[] => {
@@ -319,6 +376,12 @@ const calculateIntervals = (
 };
 
 // Función principal para obtener el nombre del acorde. Devuelve el nombre más probable, dada una figura en el diapasón
+/**
+ * Obtiene el nombre del acorde de una figura: prioriza un nombre personalizado
+ * y, en su ausencia, infiere la tónica y la cualidad a partir de sus notas activas.
+ * @precondition `selectedFrets` está ordenado por cuerda y `accidentals` es `'sharps'` o `'flats'`.
+ * @postcondition Resuelve con el nombre personalizado, el nombre inferido o `''` si no hay notas activas.
+ */
 export const getChordName = async (selectedFrets: (number | 'x')[], accidentals : AccidentalsPreference = 'sharps'): Promise<string> => {
   
   const customName = await getCustomChordName(selectedFrets);
@@ -374,11 +437,29 @@ export const extensions = CATEGORIES.filter(el => !filtro.includes(el));
 extensions.push('Ninguna');
 
 // Permite obtener la clave primaria para indexar los acordes en tabu
+/**
+ * Serializa la figura de trastes para usarla como clave estable en los mapas
+ * de penalización y en la lista tabú.
+ * @precondition `frets` es la figura ordenada de un acorde.
+ * @postcondition Devuelve la serialización JSON de la figura sin modificarla.
+ */
 export const getPenaltyKey = (frets: (number | 'x')[]) => JSON.stringify(frets);
 
+/**
+ * Comprueba si un acorde está etiquetado con el color pedido, considerando
+ * que la categoría «Disminuido» también incluye los semidisminuidos.
+ * @precondition `chord.tags` contiene las etiquetas del acorde y `color` es una etiqueta consultable.
+ * @postcondition Devuelve si las etiquetas satisfacen la categoría solicitada; no cambia el acorde.
+ */
 const matchesChordColor = (chord: TrainerChord, color: string) =>
   chord.tags.includes(color) || (color === 'Disminuido' && chord.tags.includes('Semi-disminuido'));
 
+/**
+ * Determina la categoría de séptima del acorde usando primero sus etiquetas y,
+ * si no bastan, interpretando la extensión registrada.
+ * @precondition `chord` tiene una lista de etiquetas y una extensión textual.
+ * @postcondition Devuelve la categoría identificada o `null` cuando la extensión no indica una séptima aplicable.
+ */
 const getChordSeventh = (chord: TrainerChord): string | null => {
   if (chord.tags.includes('Semi-disminuido')) return 'Semi-disminuido';
   if (chord.tags.includes('Séptima Mayor')) return 'Séptima Mayor';
@@ -390,6 +471,12 @@ const getChordSeventh = (chord: TrainerChord): string | null => {
   return extension.includes('maj') ? 'Séptima Mayor' : 'Séptima Menor';
 };
 
+/**
+ * Compara la parte principal de la extensión de un acorde y la solicitada,
+ * ignorando espacios y el contenido entre paréntesis.
+ * @precondition `chord.extension` y `requestedExtension` son cadenas.
+ * @postcondition Devuelve `true` si las bases normalizadas coinciden exactamente; no modifica los valores originales.
+ */
 const matchesRequestedExtension = (chord: TrainerChord, requestedExtension: string) => {
   const actual = chord.extension.toLowerCase().replace(/\s/g, '');
   const requested = requestedExtension.toLowerCase().replace(/\s/g, '');
@@ -399,6 +486,12 @@ const matchesRequestedExtension = (chord: TrainerChord, requestedExtension: stri
 };
 
 // Comprueba si los trastes activos de un acorde coinciden con la selección del grupo de cuerdas.
+/**
+ * Comprueba si las cuerdas no silenciadas de una figura corresponden al patrón
+ * solicitado para tríadas o voicings Drop.
+ * @precondition `frets` está ordenado de sexta a primera cuerda y `selectedStringGroup` es un patrón conocido o `null`.
+ * @postcondition Devuelve `true` si coincide el patrón; sin filtro o con un patrón desconocido deja pasar el acorde.
+ */
 export const matchesStringGroup = (
   frets: (number | 'x')[],
   selectedStringGroup: string | null
@@ -438,6 +531,12 @@ export const matchesStringGroup = (
 };
 
 // Obtiene todos los acordes que coinciden con alguno de los filtros
+/**
+ * Consulta en paralelo los filtros recibidos y combina los resultados,
+ * eliminando duplicados por identificador de acorde.
+ * @precondition `filters` contiene filtros válidos y `acc` selecciona sostenidos o bemoles.
+ * @postcondition Resuelve con los acordes coincidentes únicos; si el mismo acorde aparece varias veces conserva la última instancia recorrida.
+ */
 export const fetchAllMatchingChords = async (filters: VisualFilter[], acc: AccidentalsPreference) => {
   const chordPromises = filters.map(f => fetchMatchingChords(f, acc));
   const results = await Promise.all(chordPromises);
@@ -448,6 +547,12 @@ export const fetchAllMatchingChords = async (filters: VisualFilter[], acc: Accid
 }
 
 // Consulta en IndexedDB los acordes que coinciden exactamente con la selección de un filtro.
+/**
+ * Recupera los acordes almacenados y los filtra por tónica, cualidad, extensión,
+ * tipo de voicing y grupo de cuerdas según la selección recibida.
+ * @precondition `filters` contiene arrays de criterios y `acc` define la convención de nombres de las notas.
+ * @postcondition Resuelve con los acordes que satisfacen todas las categorías configuradas; no modifica la base de datos.
+ */
 export const fetchMatchingChords = async (filters: VisualFilter, acc: AccidentalsPreference) => {
   const { root, chordType, color, extension, stringGroup } = filters;
   const rootNotes = acc === 'sharps' ? CHROMATIC_SHARPS : CHROMATIC_FLATS;
@@ -483,6 +588,12 @@ export const fetchMatchingChords = async (filters: VisualFilter, acc: Accidental
 };
 
 // Usa la tercera y la séptima como notas guía. IA: Amplia información, no entiendo bien esta función
+/**
+ * Mide la menor distancia en semitonos entre una tercera o séptima de cada
+ * acorde, usando las notas guía presentes en ambos conjuntos.
+ * @precondition `currentNotes` y `nextNotes` contienen notas MIDI numéricas.
+ * @postcondition Devuelve la mínima distancia entre notas guía o `0` si falta una nota guía en cualquiera de los acordes.
+ */
 const getGuideToneMovement = (currentNotes: number[], nextNotes: number[]) => {
   const currentGuides = currentNotes.filter(note => [3, 4, 10, 11].includes(note % 12));
   const nextGuides = nextNotes.filter(note => [3, 4, 10, 11].includes(note % 12));
@@ -492,6 +603,12 @@ const getGuideToneMovement = (currentNotes: number[], nextNotes: number[]) => {
 };
 
 // Devuelve las métricas que usamos para orientar la búsqueda del siguiente acorde
+/**
+ * Calcula movimiento total, máximo, bajo, soprano, notas comunes, movimiento
+ * de notas guía y un coste combinado para comparar dos voicings consecutivos.
+ * @precondition `currentFrets` y `nextFrets` representan figuras en el mismo orden de cuerdas.
+ * @postcondition Devuelve todas las métricas en semitonos y el coste ponderado; no altera las figuras de entrada.
+ */
 export const getVoiceLeadingMetrics = (
   currentFrets: (number | 'x')[],
   nextFrets: (number | 'x')[],
@@ -534,6 +651,13 @@ export const getVoiceLeadingMetrics = (
 };
 
 // Devuelve el siguiente acorde a mostrar
+/**
+ * Selecciona el siguiente acorde elegible con el menor coste de conducción de
+ * voces, aplicando los filtros opcionales de progresión, modo de ejercicio,
+ * historial tabú y penalizaciones acumuladas.
+ * @precondition `matchingChords` contiene acordes con figuras válidas; `tabu` y `penalty` son estructuras mutables de historial.
+ * @postcondition Devuelve el acorde de menor puntuación o `null`; si encuentra uno, añade su clave a `tabu` y aumenta su penalización, limitando `tabu` a cinco claves.
+ */
 export const fetchNextChord = (
   currentFrets: (number | 'x')[],
   matchingChords: TrainerChord[],

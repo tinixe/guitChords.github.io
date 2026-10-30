@@ -12,12 +12,21 @@ const SHARP_TO_FLAT: Record<string, string> = {
   'A#': 'Bb',
 };
 
+/**
+ * Convierte una nota con sostenido a su equivalente en bemoles cuando el CDN
+ * usa esa convención para nombrar los samples.
+ * @precondition `noteName` es un nombre de nota en formato cromático estándar.
+ * @postcondition Devuelve el nombre equivalente usado por el CDN o el nombre original si no requiere conversión.
+ */
 const formatNoteForCDN = (noteName: string): string => {
   return noteName.replace(/^[A-G]#/, sharp => SHARP_TO_FLAT[sharp] ?? sharp);
 };
 
 /**
- * Carga y decodifica un archivo MP3 desde el CDN guardándolo en caché
+ * Carga y decodifica un archivo MP3 desde el CDN, reutilizando la caché en
+ * memoria si ya existe y guardando en ella las decodificaciones correctas.
+ * @precondition `ctx` es un contexto de audio activo y `noteName` identifica un sample disponible en el CDN.
+ * @postcondition Resuelve con el buffer decodificado o `null` ante errores de red, respuesta o decodificación; registra el error y solo almacena éxitos.
  */
 const loadAudioBuffer = async (ctx: AudioContext, noteName: string): Promise<AudioBuffer | null> => {
   const formattedName = formatNoteForCDN(noteName);
@@ -42,6 +51,12 @@ const loadAudioBuffer = async (ctx: AudioContext, noteName: string): Promise<Aud
 };
 
 
+/**
+ * Crea y conserva un único contexto de audio para toda la reproducción y lo
+ * reanuda si el navegador lo mantiene suspendido.
+ * @precondition Se ejecuta en un navegador que proporciona `AudioContext` o `webkitAudioContext`.
+ * @postcondition Devuelve el contexto de audio compartido; solicita su reanudación si está suspendido.
+ */
 const getAudioContext = (): AudioContext => {
   if (!audioCtx) {
     const AudioContextClass =
@@ -55,7 +70,10 @@ const getAudioContext = (): AudioContext => {
 };
 
 /**
- * Reproduce una muestra de audio real precargada
+ * Conecta un buffer de muestra a la salida mediante una envolvente de volumen
+ * decreciente y programa su reproducción durante la duración indicada.
+ * @precondition `ctx` acepta nodos de audio, `buffer` está decodificado y `startTime` es un tiempo válido del contexto.
+ * @postcondition Programa el inicio y la detención de la muestra; no espera a que termine la reproducción.
  */
 const playStringSample = (
   ctx: AudioContext,
@@ -80,6 +98,12 @@ const playStringSample = (
 };
 
 
+/**
+ * Obtiene los samples correspondientes a las notas no silenciadas de una
+ * figura, los carga en paralelo y los reproduce en orden con el retardo de rasgueo.
+ * @precondition `selectedFrets` contiene trastes numéricos o `'x'` en el orden de las cuerdas y `strumSpeedMs` está expresado en milisegundos.
+ * @postcondition Resuelve cuando los buffers se han cargado y programado; las cuerdas silenciadas o los samples fallidos no se reproducen.
+ */
 export const playChordSound = async (
   selectedFrets: (number | 'x')[],
   strumSpeedMs = 150,

@@ -24,6 +24,12 @@ interface HarmonicPathProps {
 const STARTING_FRETS: (number | 'x')[] = ['x', 'x', 'x', 'x', 'x', 'x'];
 const HARMONIC_PATH_STORAGE_KEY = 'harmonic_path_progression_v1';
 
+/**
+ * Interpreta un grado romano con alteraciones y sufijos para obtener intervalo, color y tipo de séptima.
+ * @param s Símbolo de acorde en numeración romana.
+ * @precondition `s` puede ser cualquier texto; los grados reconocidos siguen la sintaxis romana admitida.
+ * @postcondition Devuelve el intervalo normalizado y sus cualidades, o `interval: -1` si el símbolo no es válido.
+ */
 export const roman2interval = (s: string): { interval: number; color: ChordColorOption; seventh: string } => {
   const match = s.match(/^([b#]*)(vii|vi|iv|v|iii|ii|i)(.*)$/i);
   if (!match) return { interval: -1, color: 'Mayor', seventh: '' };
@@ -61,6 +67,13 @@ interface ParsedProgressionChord {
   extension?: string;
 }
 
+/**
+ * Convierte un token de progresión romano o cifrado en raíz y cualidades utilizables por los filtros.
+ * @param token Token individual de la progresión.
+ * @param exerciseTone Índice cromático de la tonalidad del ejercicio.
+ * @precondition `exerciseTone` está entre 0 y 11; `token` puede contener un grado romano o una raíz A-G.
+ * @postcondition Devuelve los datos normalizados del acorde o `null` cuando el token no se puede interpretar.
+ */
 const parseProgressionChord = (
   token: string,
   exerciseTone: number,
@@ -110,6 +123,11 @@ const parseProgressionChord = (
 };
 
 
+/**
+ * Recorre una progresión armónica, recomienda acordes guardados y reproduce cada transición a tempo.
+ * @precondition Las preferencias, el tempo y la tonalidad recibidos respetan los tipos del componente.
+ * @postcondition Presenta la progresión y el acorde actual, manteniendo el estado de reproducción y sus transiciones.
+ */
 export const HarmonicPath: React.FC<HarmonicPathProps> = ({
   accidentals,
   colorful,
@@ -149,6 +167,13 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
     }
   }, [progression]);
 
+  /**
+   * Alterna el traste de una cuerda mientras el recorrido está detenido.
+   * @param stringIndex Índice de la cuerda cuyo traste se modifica.
+   * @param fret Traste que se alterna.
+   * @precondition `stringIndex` identifica una cuerda válida y `fret` es un traste permitido.
+   * @postcondition Si no se está reproduciendo, actualiza la figura; durante la reproducción no la modifica.
+   */
   const handleFretClick = (stringIndex: number, fret: number) => {
     if (isPlaying) return;
     setCurrentFrets(previous => {
@@ -158,6 +183,11 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
     });
   };
 
+  /**
+   * Detiene el recorrido activo o valida la progresión y prepara las recomendaciones para iniciarlo.
+   * @precondition La progresión se expresa como tokens separados por espacios y la base de datos es consultable.
+   * @postcondition Alterna la reproducción o, si la progresión y los acordes son válidos, inicia el recorrido.
+   */
   const handleTogglePlay = async () => {
     if (isPlaying) {
       setIsPlaying(false);
@@ -248,6 +278,11 @@ export const HarmonicPath: React.FC<HarmonicPathProps> = ({
     return () => window.clearTimeout(timeout);
   }, [currentFrets, matchingChords, isPlaying, exerciseMode, tabu, penalty, accidentals, scale, roots, colors, sevenths, requestedExtensions, progrCounter, tempoBpm]);
 
+  /**
+   * Detiene el recorrido y restablece figura, métricas y penalizaciones de selección.
+   * @precondition El componente está montado.
+   * @postcondition Se vuelve al estado inicial sin acordes coincidentes ni transición mostrada.
+   */
   const handleReset = () => {
     setIsPlaying(false);
     setMatchingChords([]);

@@ -31,6 +31,12 @@ const EMPTY_RESULTS: FinderResults = {
   Other: [],
 };
 
+/**
+ * Asigna el color visual del buscador a partir de las etiquetas del acorde.
+ * @param chord Acorde cuyas etiquetas determinan su categoría.
+ * @precondition `chord.tags` contiene las etiquetas del acorde.
+ * @postcondition Devuelve una categoría cromática, priorizando disminuidos, aumentados, suspendidos y menores.
+ */
 const getChordColor = (chord: GlobalChord): ChordColor => {
   if (chord.tags.includes('Disminuido') || chord.tags.includes('Semi-disminuido')) {
     return 'diminished';
@@ -41,6 +47,13 @@ const getChordColor = (chord: GlobalChord): ChordColor => {
   return 'major';
 };
 
+/**
+ * Clasifica la nota más aguda respecto a la raíz según el intervalo y las características del acorde.
+ * @param chord Acorde que se compara con la nota guía.
+ * @param leadNoteIndex Índice cromático de la nota más aguda.
+ * @precondition El índice de la nota y el de la raíz pertenecen al rango cromático de 0 a 11.
+ * @postcondition Devuelve Root, Third, Fifth u Other según las reglas de intervalos y etiquetas.
+ */
 const getLeadFunction = (chord: GlobalChord, leadNoteIndex: number): LeadFunction => {
   const distance = (leadNoteIndex - chord.rootIndex + 12) % 12;
   const extension = chord.extension.toLowerCase();
@@ -58,6 +71,11 @@ const getLeadFunction = (chord: GlobalChord, leadNoteIndex: number): LeadFunctio
   return 'Other';
 };
 
+/**
+ * Permite seleccionar cuerdas y trastes, busca acordes coincidentes y los agrupa por función de la nota guía.
+ * @precondition La preferencia de alteraciones es válida y la base de datos de acordes puede consultarse.
+ * @postcondition Renderiza los controles y resultados actuales, o el estado de carga/error correspondiente.
+ */
 export const Finder: FC<FinderProps> = ({ accidentals }) => {
   const [selectedFrets, setSelectedFrets] = useState<(number | 'x')[]>(
     Array.from({ length: 6 }, () => 'x')
@@ -70,11 +88,18 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [finderError, setFinderError] = useState<string | null>(null);
 
+  /**
+   * Alterna el traste de una cuerda sin cambiar si está seleccionada para el filtro.
+   * @param stringIndex Índice de la cuerda modificada.
+   * @param fretNumber Traste que se alterna.
+   * @precondition `stringIndex` identifica una de las seis cuerdas y `fretNumber` es un traste válido.
+   * @postcondition Actualiza la figura, borra errores/resultados anteriores y recalcula la carga sin modificar `selectedStrings`.
+   */
   const handleFretClick = (stringIndex: number, fretNumber: number) => {
     const nextFrets = selectedFrets.map((fret, index) =>
       index === stringIndex ? (fret === fretNumber ? 'x' : fretNumber) : fret
     );
-    setSelectedStrings(selectedStrings.map((isOn, index) => index === stringIndex ? nextFrets[stringIndex] === 'x' ? false : true : isOn));
+    setSelectedStrings(selectedStrings.map((isOn, index) => index === stringIndex ? nextFrets[stringIndex] === 'x' ? false : true : isOn))
     setSelectedFrets(nextFrets);
     setResults(EMPTY_RESULTS);
     setFinderError(null);
@@ -83,6 +108,12 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
     );
   };
 
+  /**
+   * Activa o desactiva una cuerda para incluirla en la búsqueda y descarta resultados anteriores.
+   * @param stringIndex Índice de la cuerda que se alterna.
+   * @precondition `stringIndex` identifica una de las seis cuerdas.
+   * @postcondition Actualiza la selección, limpia errores/resultados y determina si hay una búsqueda pendiente.
+   */
   const handleStringToggle = (stringIndex: number) => {
     const nextStrings = selectedStrings.map((isSelected, index) =>
       index === stringIndex ? !isSelected : isSelected
@@ -134,6 +165,11 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
       };
     }
 
+    /**
+     * Consulta los acordes y agrupa los que coinciden con todos los trastes de las cuerdas activas.
+     * @precondition Hay al menos una cuerda activa con traste seleccionado y `lead_tone` ya está calculada.
+     * @postcondition Publica resultados agrupados o un mensaje de error, salvo que el efecto haya sido cancelado.
+     */
     const loadMatchingChords = async () => {
       try {
         const chords = await db.globalChords.toArray();

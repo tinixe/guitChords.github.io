@@ -15,12 +15,24 @@ export interface FretboardProps {
 }
 
 // Calcula el ancho del traste en función de su posición física
+/**
+ * Calcula el ancho porcentual de una casilla según su posición en el diapasón,
+ * usando un ancho fijo para la cejuela y una reducción progresiva en los trastes.
+ * @precondition `fretNum` es un número entero no negativo que identifica un traste.
+ * @postcondition Devuelve un porcentaje numérico positivo sin modificar el estado.
+ */
 const getFretWidthPercent = (fretNum: number) => {
   if (fretNum === 0) return 7.5; // Cejuela
   const factor = Math.pow(2.2, -fretNum / 24);
   return factor * 8.05;
 };
 
+/**
+ * Renderiza el diapasón en orientación horizontal o vertical, con las notas,
+ * selecciones y previsualizaciones permitidas por las propiedades recibidas.
+ * @precondition `selectedFrets` representa las cuerdas del instrumento y las propiedades opcionales cumplen sus tipos.
+ * @postcondition Devuelve la vista del diapasón; solo delega la edición al callback cuando no está en modo de solo lectura.
+ */
 export const Fretboard: React.FC<FretboardProps> = ({
   selectedFrets,
   onFretClick,
@@ -37,11 +49,23 @@ export const Fretboard: React.FC<FretboardProps> = ({
     fretNum: number;
   } | null>(null);
 
+  /**
+   * Procesa la selección de una casilla y no hace nada cuando el diapasón es
+   * de solo lectura o no se proporcionó un callback de selección.
+   * @precondition Los índices de cuerda y traste corresponden a la casilla renderizada.
+   * @postcondition Invoca `onFretClick` una vez con ambos índices solo si la edición está habilitada.
+   */
   const handleCellClick = (stringIndex: number, fretNumber: number) => {
     if (readOnly || !onFretClick) return;
     onFretClick(stringIndex, fretNumber);
   };
 
+  /**
+   * Construye la casilla visual para una cuerda y un traste, incluyendo su
+   * nota, selección, silenciamiento y controles de interacción.
+   * @precondition `stringIndex` y `fretNum` identifican una cuerda y traste válidos.
+   * @postcondition Devuelve el elemento visual de esa casilla sin cambiar los trastes seleccionados.
+   */
   const renderFretCell = (stringIndex: number, fretNum: number) => {
     const activeFret = selectedFrets[stringIndex];
     const isSelected = activeFret === fretNum;
@@ -53,12 +77,38 @@ export const Fretboard: React.FC<FretboardProps> = ({
       hoveredPosition?.fretNum === fretNum &&
       !isSelected;
     const noteLabel = getNoteName(stringIndex, fretNum, accidentals);
+
+    /**
+     * Adapta el clic de la casilla a sus índices de cuerda y traste.
+     * @precondition La casilla pertenece a la cuerda y al traste capturados.
+     * @postcondition Delega en `handleCellClick`, que respeta el modo de solo lectura.
+     */
+    const onCellClick = () => handleCellClick(stringIndex, fretNum);
+
+    /**
+     * Actualiza la previsualización al entrar el puntero en la casilla editable.
+     * @precondition La casilla actual corresponde a los índices capturados.
+     * @postcondition Guarda la posición de esta casilla si la edición está habilitada; en solo lectura no altera el estado.
+     */
+    const onCellMouseEnter = () => {
+      if (!readOnly) setHoveredPosition({ stringIdx: stringIndex, fretNum });
+    };
+
+    /**
+     * Limpia la previsualización al salir el puntero de la casilla editable.
+     * @precondition La casilla actual forma parte del diapasón renderizado.
+     * @postcondition Borra la posición previsualizada si la edición está habilitada; en solo lectura no altera el estado.
+     */
+    const onCellMouseLeave = () => {
+      if (!readOnly) setHoveredPosition(null);
+    };
+
     return (
       <div
         key={`${stringIndex}-${fretNum}`}
-        onClick={() => handleCellClick(stringIndex, fretNum)}
-        onMouseEnter={() => !readOnly && setHoveredPosition({ stringIdx: stringIndex, fretNum })}
-        onMouseLeave={() => !readOnly && setHoveredPosition(null)}
+        onClick={onCellClick}
+        onMouseEnter={onCellMouseEnter}
+        onMouseLeave={onCellMouseLeave}
         style={orientation === 'horizontal'
           ? { width: `${getFretWidthPercent(fretNum)}%` }
           : undefined}

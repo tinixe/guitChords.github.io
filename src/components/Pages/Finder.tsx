@@ -13,9 +13,9 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
     Array.from({ length: 6 }, () => 'x')
   );
   
-  const [selectedStrings, setSelectedStrings] = useState<(Boolean)[]>(
+  const [selectedStrings, setSelectedStrings] = useState<boolean[]>(
     Array.from({ length: 6 }, () => false)
-  )
+  );
 
   const handleFretClick = (stringIndex: number, fretNumber: number) => {
     setSelectedFrets((currentFrets) =>
@@ -26,16 +26,20 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
   };
 
   const handleStringToggle = (stringIndex: number) => {
-    setSelectedStrings(selectedStrings.map((isOn, index) => stringIndex === index ? !isOn : isOn));
+    setSelectedStrings((currentStrings) =>
+      currentStrings.map((isSelected, index) =>
+        index === stringIndex ? !isSelected : isSelected
+      )
+    );
   };
 
   return (
     <section className="finder-page">
       <div className="finder-layout">
-        <div className="finder-string-buttons" aria-label="Activar o silenciar cuerdas">
+        <div className="finder-string-buttons" aria-label="Seleccionar cuerdas para el filtro">
           <span aria-hidden="true" />
           {BASE_NOTES.map((note, stringIndex) => {
-            const isActive = selectedFrets[stringIndex] !== 'x';
+            const isActive = selectedStrings[stringIndex];
             return (
               <button
                 key={stringIndex}

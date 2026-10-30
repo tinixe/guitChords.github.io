@@ -74,6 +74,7 @@ export const Finder: FC<FinderProps> = ({ accidentals }) => {
     const nextFrets = selectedFrets.map((fret, index) =>
       index === stringIndex ? (fret === fretNumber ? 'x' : fretNumber) : fret
     );
+    setSelectedStrings(selectedStrings.map((isOn, index) => index === stringIndex ? true : isOn));
     setSelectedFrets(nextFrets);
     setResults(EMPTY_RESULTS);
     setFinderError(null);
